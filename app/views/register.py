@@ -4,7 +4,7 @@ from app.views.common import *
 # 定义蓝图
 register = Blueprint('register', __name__)
 
-# 登录模块
+# 注册模块
 @register.route('/', methods=["GET", "POST"])
 def index():
     if request.method == 'POST':
