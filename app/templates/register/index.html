@@ -67,6 +67,12 @@
                                        value="{{ g.request_name }}">
                             </div>
                             <div class="form-group">
+                                <label class="sr-only" for="form-username">full_name</label>
+                                <input type="text" name="form-full_name" placeholder="full_name..."
+                                       class="form-username form-control" id="form-full_name"
+                                       value="{{ g.full_name }}">
+                            </div>
+                            <div class="form-group">
                                 <label class="sr-only" for="form-password">Password</label>
                                 <input type="password" name="form-password" placeholder="Password..."
                                        class="form-password form-control" id="form-password"
@@ -105,6 +111,7 @@
 <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jquery.backstretch.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/function.js') }}"></script>
 
 <!--[if lt IE 10]>
             <script src="{{ url_for('static', filename='js/placeholder.js') }}"></script>
