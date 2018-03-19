@@ -349,7 +349,9 @@
                     </a>
                 </li>
 
-                <li>
+
+
+                <li class="treeview active">
                     <a href="#">
                         <i class="fa fa-table"></i> <span>固定资产</span>
                         <span class="pull-right-container">
@@ -357,12 +359,12 @@
                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ url_for('assets.hosts') }}"><i class="fa fa-desktop"></i> 主机信息</a></li>
+                        <li class="active"><a href="{{ url_for('assets.hosts') }}"><i class="fa fa-desktop"></i> 主机信息</a></li>
                     </ul>
                 </li>
 
 
-                <li class="treeview active">
+                <li>
                     <a href="#">
                         <i class="fa fa-gear"></i> <span>系统管理</span>
                         <span class="pull-right-container">
@@ -370,9 +372,10 @@
                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li  class="active"><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
+                        <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
                     </ul>
                 </li>
+
 
             </ul>
         </section>
@@ -385,13 +388,13 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                用户列表
-                <small>管理所有用户</small>
+                主机列表
+                <small>通过saltstack自动添加/更新主机信息</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="#">系统管理</a></li>
-                <li class="active">用户管理</li>
+                <li><a href="#">固定资产</a></li>
+                <li class="active">主机管理</li>
             </ol>
         </section>
 
@@ -401,40 +404,38 @@
                 <div class="col-xs-12">
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title"></h3>
+                            <a class="btn btn-primary btn-xs" onclick="assets_update_hosts()">更新
+                            </a>
+                            <a class="btn btn-warning btn-xs" onclick="Overloaded_page()">刷新
+                            </a>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>用户名</th>
-                                    <th>姓名</th>
-                                    <th>状态</th>
-                                    <th>注册时间</th>
-                                    <th>最近登录</th>
-                                    <th>操作</th>
+                                    <th>主机名</th>
+                                    <th>系统</th>
+                                    <th>内核版本</th>
+                                    <th>selinux</th>
+                                    <th>CPU</th>
+                                    <th>内存(M)</th>
+                                    <th>添加时间</th>
+                                    <th>更新时间</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                {% for user in g.UserInfo %}
+                                {% for host in g.HostInfo %}
                                     <tr>
-                                        <td>{{ user.username }}</td>
-                                        <td>{{ user.full_name }}</td>
-                                        {% if user.active == 1 %}
-                                            <td onclick="sys_user_disable({{ user.id }})"><a title="点击停用" href="#"><span
-                                                    class="label label-success">正常</span></a></td>
-                                        {% elif user.active == 0 %}
-                                            <td onclick="sys_user_enable({{ user.id }})"><a href="#" title="点击启用"><span
-                                                    class="label label-danger">停用</span></a>
-                                            </td>
-                                        {% else %}
-                                            <td><span class="label label-warning">未知</span></td>
-                                        {% endif %}
-                                        <td>{{ user.add_time }}</td>
-                                        <td>{{ user.login_time }}</td>
-                                        <td onclick="sys_user_del(this,{{ user.id }})"><a href="#">删除</a></td>
+                                        <td>{{ host.hostname }}</td>
+                                        <td>{{ host.os }} {{ host.osrelease }} </td>
+                                        <td>{{ host.kernelrelease }}</td>
+                                        <td>{{ host.selinux }}</td>
+                                        <td>{{ host.num_cpus }}</td>
+                                        <td>{{ host.mem_total }}</td>
+                                        <td>{{ host.add_time }}</td>
+                                        <td>{{ host.up_time }}</td>
                                     </tr>
                                 {% endfor %}
 

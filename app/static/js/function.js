@@ -75,3 +75,33 @@ function sys_user_del(obj, user_id) {
         }
     });
 }
+
+//更新固定资产主机列表
+function assets_update_hosts() {
+    layer.msg("更新中，请稍后....",{time: 0});
+    $.ajax({
+        type: 'post',
+        url: '/assets/hosts_up',
+        dataType: 'json',
+        success: function (data) {
+            var obj2 = eval(data);
+            if (obj2.status == "操作成功") {
+                layer.msg("更新完成，请刷新页面");
+            } else {
+                layer.msg(obj2.status)
+            }
+        }
+    });
+
+
+
+}
+
+//重载页面
+function Overloaded_page() {
+    var index = layer.load(1, {
+        shade: [0.1,'#fff'] //0.1透明度的白色背景
+    });
+    location.reload();
+
+}

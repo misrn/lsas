@@ -350,15 +350,28 @@
 
                 <li>
                     <a href="#">
-                        <i class="fa fa-table"></i> <span>系统管理</span>
+                        <i class="fa fa-table"></i> <span>固定资产</span>
                         <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i></span>
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-circle-o"></i> 用户管理</a></li>
+                        <li><a href="{{ url_for('assets.hosts') }}"><i class="fa fa-desktop"></i> 主机信息</a></li>
                     </ul>
                 </li>
-            </ul>
+
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-gear"></i> <span>系统管理</span>
+                        <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
+                    </ul>
+                </li>
         </section>
         <!-- 菜单部分 -->
     </aside>
