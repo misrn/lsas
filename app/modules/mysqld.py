@@ -17,7 +17,7 @@ class Hosts(db.Model):
     osrelease = db.Column(db.String(255), unique=False, nullable=False)  # 服务器版本
     kernelrelease = db.Column(db.String(255), unique=False, nullable=False)  # 内核版本
     selinux = db.Column(db.String(255), unique=False, nullable=False)  # selinux状态
-    status = db.Column(db.String(255), unique=False, nullable=False)  # 主机状态
+    status = db.Column(db.Integer(), unique=False, nullable=False)  # 主机状态
     mem_total = db.Column(db.Integer(), unique=False, nullable=False)  # 内存大小（单位M）
     num_cpus = db.Column(db.Integer(), unique=False, nullable=False)  # cpu核数
     add_time = db.Column(db.DateTime(), unique=False,nullable=False)  # 添加时间

@@ -420,6 +420,7 @@
                                     <th>selinux</th>
                                     <th>CPU</th>
                                     <th>内存(M)</th>
+                                    <th>状态</th>
                                     <th>添加时间</th>
                                     <th>更新时间</th>
                                 </tr>
@@ -434,6 +435,14 @@
                                         <td>{{ host.selinux }}</td>
                                         <td>{{ host.num_cpus }}</td>
                                         <td>{{ host.mem_total }}</td>
+                                        {% if host.status == 1 %}
+                                        <td><a><span class="label label-success">正常</span></a></td>
+                                            {% elif host.status == 0 %}
+                                            <td><a><span class="label label-danger">离线</span></a>
+                                                {% else %}
+                                                <td><a><span class="label label-warning">未知</span></a>
+                                        {% endif %}
+                                        </td>
                                         <td>{{ host.add_time }}</td>
                                         <td>{{ host.up_time }}</td>
                                     </tr>
