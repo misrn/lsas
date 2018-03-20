@@ -1,5 +1,9 @@
 # lsas
 
+开发语言：python
+
+python框架：flask
+
 实现功能
 
 - 用户登录，及其url登录保护
@@ -9,7 +13,7 @@
 
 基于python flask框架实现注册及登录； 默认账户/密码：admin/passwd
 
-导入数据库 [users.sql](https://github.com/fandaye/lsas/blob/master/doc/users.sql)
+导入数据库 [users.sql](https://github.com/fandaye/lsas/blob/master/doc/users.sql) ， [hosts.sql](https://github.com/fandaye/lsas/blob/master/doc/hosts.sql)
 
 注册页面：http://127.0.0.1/register
 
