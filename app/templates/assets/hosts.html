@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>LSAS | 用户管理</title>
+    <title>LSAS | 主机信息</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.png') }}">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -349,8 +349,6 @@
                     </a>
                 </li>
 
-
-
                 <li class="treeview active">
                     <a href="#">
                         <i class="fa fa-table"></i> <span>固定资产</span>
@@ -397,7 +395,6 @@
                 <li class="active">主机管理</li>
             </ol>
         </section>
-
         <!-- Main content -->
         <section class="content">
             <div class="row">
@@ -417,12 +414,14 @@
                                     <th>主机名</th>
                                     <th>系统</th>
                                     <th>内核版本</th>
+                                    <th>IP地址</th>
                                     <th>selinux</th>
                                     <th>CPU</th>
                                     <th>内存(M)</th>
                                     <th>状态</th>
                                     <th>添加时间</th>
                                     <th>更新时间</th>
+                                    <th>操作</th>
                                 </tr>
                                 </thead>
 
@@ -432,6 +431,7 @@
                                         <td>{{ host.hostname }}</td>
                                         <td>{{ host.os }} {{ host.osrelease }} </td>
                                         <td>{{ host.kernelrelease }}</td>
+                                        <td>{{ host.eth0_ipaddr }}</td>
                                         <td>{{ host.selinux }}</td>
                                         <td>{{ host.num_cpus }}</td>
                                         <td>{{ host.mem_total }}</td>
@@ -445,6 +445,7 @@
                                         </td>
                                         <td>{{ host.add_time }}</td>
                                         <td>{{ host.up_time }}</td>
+                                        <td onclick='hostsinfo("{{ host.hostname }}")'><a href="#"> <span class="label label-info" >详细</span></a></td>
                                     </tr>
                                 {% endfor %}
 

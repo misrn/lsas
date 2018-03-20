@@ -2,11 +2,12 @@
 from app import db
 import time
 
-#unique 如果为True 则不能出现重复的值
-#primary_key 表示主键
-#index 为True 创建索引
-#nullable 如果为True 允许使用空值
-#default 设置默认值
+
+# unique 如果为True 则不能出现重复的值
+# primary_key 表示主键
+# index 为True 创建索引
+# nullable 如果为True 允许使用空值
+# default 设置默认值
 
 # 主机列表
 class Hosts(db.Model):
@@ -20,10 +21,11 @@ class Hosts(db.Model):
     status = db.Column(db.Integer(), unique=False, nullable=False)  # 主机状态
     mem_total = db.Column(db.Integer(), unique=False, nullable=False)  # 内存大小（单位M）
     num_cpus = db.Column(db.Integer(), unique=False, nullable=False)  # cpu核数
-    add_time = db.Column(db.DateTime(), unique=False,nullable=False)  # 添加时间
-    up_time = db.Column(db.DateTime(), unique=False,nullable=True)  # 更新时间
+    add_time = db.Column(db.DateTime(), unique=False, nullable=False)  # 添加时间
+    up_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 更新时间
+    eth0_ipaddr = db.Column(db.String(255), unique=False, nullable=False)  # eth0网卡IP地址
 
-    def __init__(self, hostname, os, osrelease,kernelrelease,selinux,status,mem_total,num_cpus):
+    def __init__(self, hostname, os, osrelease, kernelrelease, selinux, status, mem_total, num_cpus, eth0_ipaddr):
         self.hostname = hostname
         self.os = os
         self.osrelease = osrelease
@@ -32,9 +34,8 @@ class Hosts(db.Model):
         self.status = status
         self.mem_total = mem_total
         self.num_cpus = num_cpus
+        self.eth0_ipaddr = eth0_ipaddr
         self.add_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-
-
 
 
 # 用户表

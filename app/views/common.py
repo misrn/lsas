@@ -27,3 +27,13 @@ def rep_json(status):
         "status": status
     }
     return json.dumps(data)
+
+def Json_Unicode_To_Uft8(input):
+    if isinstance(input, dict):
+        return {Json_Unicode_To_Uft8(key): Json_Unicode_To_Uft8(value) for key, value in input.iteritems()}
+    elif isinstance(input, list):
+        return [Json_Unicode_To_Uft8(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
