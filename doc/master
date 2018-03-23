@@ -1,0 +1,18 @@
+default_include: master.d/*.conf
+interface: 0.0.0.0
+ipv6: False
+publish_port: 4505
+cachedir: /data/cache/salt/master
+auto_accept: True
+file_roots:
+  base:
+    - /data/salt/salt/
+file_ignore_regex:
+  - '/\.svn($|/)'
+  - '/\.git($|/)'
+file_ignore_glob:
+  - '*.pyc'
+  - '*.swp'
+pillar_roots:
+  base:
+    - /data/salt/pillar

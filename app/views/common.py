@@ -4,6 +4,7 @@ from flask_login import login_required ,current_user ,logout_user,login_user
 from app.modules import  mysqld
 from app.modules import salt
 from app.modules.salt import *
+from app.modules.file import *
 from app.modules.mysqld import *
 from app import login_manager, app
 from functools import wraps

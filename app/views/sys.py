@@ -31,3 +31,4 @@ def users_mg():
             UserInfo.active = 2
         db.session.commit()
     return rep_json("操作成功")
+

@@ -347,7 +347,18 @@
                         <span class="pull-right-container"></span>
                     </a>
                 </li>
-
+                <li>
+                    <a href="#">
+                        <i class="fa fa-th-large"></i> <span>Salt管理</span>
+                        <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{{ url_for('salt.file') }}"><i class="fa fa-wrench"></i> 配置维护</a>
+                        </li>
+                    </ul>
+                </li>
                 <li>
                     <a href="#">
                         <i class="fa fa-table"></i> <span>固定资产</span>
