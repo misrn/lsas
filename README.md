@@ -16,5 +16,7 @@ python框架：flask
 
 导入数据库 [users.sql](https://github.com/fandaye/lsas/blob/master/doc/users.sql) ， [hosts.sql](https://github.com/fandaye/lsas/blob/master/doc/hosts.sql)
 
+添加配置文件app/config/config.py；参考模板[config-example.py](https://github.com/fandaye/lsas/blob/master/doc/config-example.py)
+
 首页：http://127.0.0.1/
 注册页面：http://127.0.0.1/register
