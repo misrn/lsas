@@ -24,6 +24,15 @@ class Project(db.Model):
     loca_path = db.Column(db.String(255), unique=False, nullable=False)  # 本地路径
     pre_hosts = db.Column(db.String(255), unique=False, nullable=False)  # 预发布服务器地址
     pro_hosts = db.Column(db.String(255), unique=False, nullable=False)  # 生产服务器地址
+    def __init__(self, project_name, type, svn_addr, app_path, loca_path, pre_hosts, pro_hosts):
+        self.project_name = project_name
+        self.add_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        self.type = type
+        self.svn_addr = svn_addr
+        self.app_path = app_path
+        self.loca_path = loca_path
+        self.pre_hosts = pre_hosts
+        self.pro_hosts = pro_hosts
 
 # 主机列表
 class Hosts(db.Model):

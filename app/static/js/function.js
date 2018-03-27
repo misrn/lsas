@@ -469,6 +469,11 @@ function deploy_poject_add_post() {
             },
             dataType: 'json',
             success: function (js) {
+              var obj = js;
+            if (obj.code == 1) {
+                deployplist();
+                layer.close(layer.index);
+              }
             }
         });
     }
