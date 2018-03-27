@@ -18,17 +18,20 @@ def users():
 @login_required  # 登录保护
 def users_mg():
     if request.method == 'POST':
-        user_id = request.form['user_id']  # 用户ID
-        operation = request.form['operation']  # 操作
-        UserInfo = Users.query.get(user_id)
-        if operation == "disable":
-            UserInfo.active = 0
-        elif operation == "enable":
-            UserInfo.active = 1
-        elif operation == "del":
-            db.session.delete(UserInfo)
-        else:
-            UserInfo.active = 2
-        db.session.commit()
-    return rep_json("操作成功")
+        try:
+            user_id = request.form['user_id']  # 用户ID
+            operation = request.form['operation']  # 操作
+            UserInfo = Users.query.get(user_id)
+            if operation == "disable":
+                UserInfo.active = 0
+            elif operation == "enable":
+                UserInfo.active = 1
+            elif operation == "del":
+                db.session.delete(UserInfo)
+            else:
+                UserInfo.active = 2
+            db.session.commit()
+            return rep_json(1,u"操作成功","")
+        except:
+            return rep_json(-1,u"操作失败","")
 

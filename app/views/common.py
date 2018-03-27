@@ -10,6 +10,7 @@ from app import login_manager, app
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+from datetime import date, datetime
 
 #用户加载回调
 @login_manager.user_loader
@@ -23,9 +24,11 @@ def before_request():
     g.user = current_user
 
 # 返回json
-def rep_json(status):
+def rep_json(code,msg,data):
     data = {
-        "status": status
+        "code":code,
+        "msg": msg,
+        "data":data
     }
     return json.dumps(data)
 
@@ -38,3 +41,14 @@ def Json_Unicode_To_Uft8(input):
         return input.encode('utf-8')
     else:
         return input
+
+class MyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        # if isinstance(obj, datetime.datetime):
+        #     return int(mktime(obj.timetuple()))
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)

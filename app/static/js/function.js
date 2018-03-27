@@ -14,8 +14,11 @@ function sys_user_disable(user_id) {
                 },
                 dataType: 'json',
                 success: function (data) {
-                    var obj2 = eval(data);
-                    layer.msg(obj2.status)
+                    if (data.code == 1) {
+                        location.reload();
+                    } else {
+                        layer.msg(obj2.msg)
+                    }
                 }
             });
         }
@@ -38,8 +41,11 @@ function sys_user_enable(user_id) {
                 },
                 dataType: 'json',
                 success: function (data) {
-                    var obj2 = eval(data);
-                    layer.msg(obj2.status)
+                    if (data.code == 1) {
+                        location.reload();
+                    } else {
+                        layer.msg(obj2.msg)
+                    }
                 }
             });
         }
@@ -62,13 +68,12 @@ function sys_user_del(obj, user_id) {
                 },
                 dataType: 'json',
                 success: function (data) {
-                    var obj2 = eval(data);
-                    if (obj2.status == "操作成功") {
+                    if (data.code == 1) {
                         var index = obj.parentNode.rowIndex;
                         var table = document.getElementById("example1");
                         table.deleteRow(index)
                     } else {
-                        layer.msg(obj2.status)
+                        layer.msg(data.msg)
                     }
                 }
             });
@@ -84,11 +89,10 @@ function assets_update_hosts() {
         url: '/assets/hosts_up',
         dataType: 'json',
         success: function (data) {
-            var obj2 = eval(data);
-            if (obj2.status == "操作成功") {
-                layer.msg("更新完成，请刷新页面");
+            if (data.code == 1) {
+                location.reload();
             } else {
-                layer.msg(obj2.status)
+                layer.msg(obj2.msg)
             }
         }
     });
@@ -223,8 +227,8 @@ function saltfopen(path, dpath) {
                 $('#list').hide();
                 $('#edit').show();
                 $('#filename').html("正在编辑文件:" + path);
-                 var Str =  '<textarea spellcheck="false" id="fopentxt" style="width:100%; height:720px; font-family:SimSun">'+obj.data+'</textarea>';
- //               var Str = '<pre contenteditable="true" id="fopentxt" >' + obj.data + '</pre>';
+                var Str = '<textarea spellcheck="false" id="fopentxt" style="width:100%; height:720px; font-family:SimSun">' + obj.data + '</textarea>';
+                //               var Str = '<pre contenteditable="true" id="fopentxt" >' + obj.data + '</pre>';
                 $("#editor").html(Str);
                 $('#Navigation').html(SrtNavigation)
             }
@@ -318,7 +322,7 @@ function saltlistdir(path) {
 }
 
 function saltdadd(dpath) {
-    layer.prompt({title:"输入文件夹名称"},function (dname, index) {
+    layer.prompt({title: "输入文件夹名称"}, function (dname, index) {
         $.ajax({
             type: 'post',
             url: '/salt/filemg',
@@ -343,7 +347,7 @@ function saltdadd(dpath) {
 }
 
 function saltfadd(dpath) {
-    layer.prompt({title:"输入文件名称"},function (dname, index) {
+    layer.prompt({title: "输入文件名称"}, function (dname, index) {
         $.ajax({
             type: 'post',
             url: '/salt/filemg',
@@ -365,4 +369,53 @@ function saltfadd(dpath) {
         });
         layer.close(index);
     });
+}
+
+
+function deployplist() {
+    $.ajax({
+        type: 'post',
+        url: '/deploy/projectmg',
+        data: {
+            "action": 'list'
+        },
+        dataType: 'json',
+        success: function (js) {
+            var obj = js;
+            if (obj.code != 1) {
+                layer.msg(obj.msg)
+            } else {
+                var trStr = '';
+                for (i = 0; i < obj.data.length; i++) {
+                    trStr += '<tr> ';
+                    trStr += '<td><p style="font-weight:bold">' + obj.data[i].project_name + '/' + obj.data[i].type + '</p></td> ';
+                    trStr += '<td> ' + obj.data[i].pre_version + '/' + obj.data[i].pro_version + '</td>';
+                    trStr += '<td> ' + obj.data[i].add_time + '</td>';
+                    trStr += '<td> <a class="btn btn-default btn-xs"><i class="fa fa-fw fa-bitbucket-square"></i>预发布</a> ' +
+                        '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>生发布</a> ' +
+                        '</td>';
+                    trStr += '<td> <a class="btn btn-default btn-xs"><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
+                        '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
+                        '</td>';
+                    trStr += '</tr> ';
+                }
+                $("#Project").html(trStr);
+            }
+        }
+    });
+}
+
+
+function deploypadd() {
+    layer.open({
+        type: 1,
+        title: "添加部署项目",
+        closeBtn: 0,
+        area: ['80%', '90%'],
+        skin: 'layui-layer-nobg', //没有背景色
+        shadeClose: true,
+        content: $('#deploypadd')
+    });
+
+    //$('#deploypadd').show();
 }
