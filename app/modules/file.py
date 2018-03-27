@@ -3,8 +3,8 @@
 import os
 import json
 import time
-import pwd
-import grp
+#import pwd
+#import grp
 import sys
 
 reload(sys)

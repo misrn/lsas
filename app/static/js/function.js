@@ -389,13 +389,11 @@ function deployplist() {
                 for (i = 0; i < obj.data.length; i++) {
                     trStr += '<tr> ';
                     trStr += '<td><p style="font-weight:bold">' + obj.data[i].project_name + '/' + obj.data[i].type + '</p></td> ';
-                    trStr += '<td> ' + obj.data[i].pre_version + '/' + obj.data[i].pro_version + '</td>';
                     trStr += '<td> ' + obj.data[i].add_time + '</td>';
-                    trStr += '<td> <a class="btn btn-default btn-xs"><i class="fa fa-fw fa-bitbucket-square"></i>预发布</a> ' +
-                        '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>生发布</a> ' +
-                        '</td>';
+                    trStr += '<td> ' + obj.data[i].up_time + '</td>';
                     trStr += '<td> <a class="btn btn-default btn-xs"><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
                         '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
+                        '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>详情</a> ' +
                         '</td>';
                     trStr += '</tr> ';
                 }
@@ -406,16 +404,72 @@ function deployplist() {
 }
 
 
-function deploypadd() {
+function deploy_poject_add_layer() {
+    $.ajax({
+        type: 'post',
+        url: '/deploy/projectmg',
+        data: {
+            "action": 'listhosts'
+        },
+        dataType: 'json',
+        success: function (js) {
+            var Str_pro = '';
+            var Str_pre = '';
+            for (i = 0; i < js.data.length; i++) {
+                Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + js.data[i].hostname + '" name="Hosts_pro" style="vertical-align:middle;"> ' + js.data[i].hostname + '</label>';
+                Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + js.data[i].hostname + '" name="Hosts_pre" style="vertical-align:middle;"> ' + js.data[i].hostname + '</label>';
+            }
+            $("#projecthosts_pre").html(Str_pre);
+            $("#projecthosts_pro").html(Str_pro);
+        }
+    });
+
     layer.open({
         type: 1,
         title: "添加部署项目",
         closeBtn: 0,
-        area: ['80%', '90%'],
+        area: ['80%', '50%'],
         skin: 'layui-layer-nobg', //没有背景色
         shadeClose: true,
         content: $('#deploypadd')
     });
+}
 
-    //$('#deploypadd').show();
+
+function deploy_poject_add_post() {
+    var project_type = document.getElementById("project_type").value;
+    var project_name = document.getElementById("project_name").value;
+
+    if (project_name == "") {
+        layer.msg("请输入项目名称!")
+    } else if (project_type == "") {
+        layer.msg("请选择项目类型!")
+    } else {
+        obj_pro = document.getElementsByName("Hosts_pro");
+        Hosts_pro = [];
+        for (k in obj_pro) {
+            if (obj_pro[k].checked)
+                Hosts_pro.push(obj_pro[k].value);
+        }
+        obj_pre = document.getElementsByName("Hosts_pre");
+        Hosts_pre = [];
+        for (k in obj_pre) {
+            if (obj_pre[k].checked)
+                Hosts_pre.push(obj_pre[k].value);
+        }
+        $.ajax({
+            type: 'post',
+            url: '/deploy/projectmg',
+            data: {
+                "action": 'addproject',
+                "project_type": project_type,
+                "project_name": project_name,
+                "Hosts_pro": Hosts_pro.toString(),
+                "Hosts_pre": Hosts_pre.toString()
+            },
+            dataType: 'json',
+            success: function (js) {
+            }
+        });
+    }
 }

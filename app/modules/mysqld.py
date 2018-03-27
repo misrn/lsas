@@ -9,6 +9,22 @@ import time
 # nullable 如果为True 允许使用空值
 # default 设置默认值
 
+#项目表
+class Project(db.Model):
+    __tablename__ = 'project'
+    id = db.Column(db.Integer(), primary_key=True, nullable=False)
+    project_name = db.Column(db.String(255), unique=False, nullable=False)  # 项目名称
+    add_time = db.Column(db.DateTime(), unique=False, nullable=False)  # 添加时间
+    up_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 更新时间
+    pre_version = db.Column(db.Integer(), unique=False, nullable=False)  # 预发布版本号
+    pro_version = db.Column(db.Integer(), unique=False, nullable=False)  # 生产版本号
+    type = db.Column(db.String(255), unique=False, nullable=False)  # 项目类型
+    svn_addr = db.Column(db.String(255), unique=False, nullable=False)  # SVN地址
+    app_path = db.Column(db.String(255), unique=False, nullable=False)  # 部署路径
+    loca_path = db.Column(db.String(255), unique=False, nullable=False)  # 本地路径
+    pre_hosts = db.Column(db.String(255), unique=False, nullable=False)  # 预发布服务器地址
+    pro_hosts = db.Column(db.String(255), unique=False, nullable=False)  # 生产服务器地址
+
 # 主机列表
 class Hosts(db.Model):
     __tablename__ = 'hosts'
