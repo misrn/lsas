@@ -391,7 +391,7 @@ function deployplist() {
                     trStr += '<td><p style="font-weight:bold">' + obj.data[i].project_name + '/' + obj.data[i].type + '</p></td> ';
                     trStr += '<td> ' + obj.data[i].add_time + '</td>';
                     trStr += '<td> ' + obj.data[i].up_time + '</td>';
-                    trStr += '<td> <a class="btn btn-default btn-xs"><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
+                    trStr += '<td> <a class="btn btn-default btn-xs" onclick=deploypdel("'+obj.data[i].project_name+'")><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
                         '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
                         '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>详情</a> ' +
                         '</td>';
@@ -403,6 +403,34 @@ function deployplist() {
     });
 }
 
+
+function deploypdel(project_name) {
+    layer.msg('你确定删除该项目?', {
+        time: 0 //不自动关闭
+        , btn: ['确定', '取消']
+        , yes: function (index) {
+            layer.close(index);
+            $.ajax({
+                type: 'post',
+                url: '/deploy/projectmg',
+                data: {
+                    "project_name": project_name,
+                    "action": 'delete'
+                },
+                dataType: 'json',
+                success: function (js) {
+                    //var obj = JSON.parse(js);
+                    var obj = js;
+                    if (obj.code == 1) {
+                        saltlistdir(dpath)
+                    } else {
+                        layer.msg(obj.msg)
+                    }
+                }
+            });
+        }
+    });
+}
 
 function deploy_poject_add_layer() {
     $.ajax({

@@ -38,6 +38,22 @@ def projectmg():
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var})
             except:
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+        elif action == "delete":
+            project_name = request.form['project_name']
+            dstatus, inputd=commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name)) #删除代码目录
+            fstatus, inputf=commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'].replace("files/", ""),project_name.replace(".","-") + '.sls')) #删除执行文件
+            if dstatus == 0 and fstatus ==0:
+                try:
+                    ProjectInfo = Project.query.get(project_name=project_name)
+                    db.session.delete(ProjectInfo)
+                    db.session.commit()
+                    return json.dumps({"code": 1, "msg": u"删除成功!", "data": ""})
+                except:
+                    return json.dumps({"code": -1, "msg": u"删除失败!", "data": ""})
+            else:
+                return json.dumps({"code": -1, "msg": u"删除失败!", "data": ""})
+
+
         elif action == "addproject":
             project_type = request.form['project_type']  # 项目类型
             project_name = request.form['project_name']  # 项目名称
@@ -75,10 +91,8 @@ def projectmg():
             if os.path.exists(app.config['SVN_LOCA_PATH'] + project_name):  # 判断项目代码目录存在的情况
                 repo = os.popen("%s info %s%s|grep 'Repository Root'" % (app.config['SVN_CMD'], app.config['SVN_LOCA_PATH'], project_name)).readlines()[0].replace("Repository Root: ", "").replace("\n", "")
                 branch = os.popen("%s info %s%s|grep 'Relative URL:'" % (app.config['SVN_CMD'], app.config['SVN_LOCA_PATH'], project_name)).readlines()[0].replace("Relative URL: ^/", "").replace("\n", "")
-                if repo + '/' + branch != app.config['SVN_ADDR'] + project_name + '/' + app.config[
-                    'SVN_BRANCH']:  # 判断svn是否是当前svn地址； 不是则删除目录
-                    status, input = commands.getstatusoutput(
-                        'rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))
+                if repo + '/' + branch != app.config['SVN_ADDR'] + project_name + '/' + app.config['SVN_BRANCH']:  # 判断svn是否是当前svn地址； 不是则删除目录
+                    commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))
                 else:  # 如果是返回已经存在该项目
                     return (json.dumps({"code": -1, "msg": u"该项目已经存在!", "data": ""}))
 
