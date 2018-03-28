@@ -422,7 +422,7 @@ function deploypdel(project_name) {
                     //var obj = JSON.parse(js);
                     var obj = js;
                     if (obj.code == 1) {
-                        saltlistdir(dpath)
+                        deployplist()
                     } else {
                         layer.msg(obj.msg)
                     }
