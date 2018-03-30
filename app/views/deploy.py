@@ -8,7 +8,7 @@ deploy = Blueprint('deploy', __name__)
 
 @deploy.route('/project', methods=["GET", "POST"])
 @login_required  # 登录保护
-def index():
+def project():
     g.HostInfo = db.session.query(Hosts).all()
     return render_template("deploy/project.html")
 

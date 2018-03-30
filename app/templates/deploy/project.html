@@ -350,7 +350,7 @@
                     </a>
                 </li>
 
-                <li class="treeview active">
+                <li >
                     <a href="#">
                         <i class="fa fa-th-large"></i> <span>Salt管理</span>
                         <span class="pull-right-container">
@@ -358,7 +358,7 @@
                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li class="active"><a href="{{ url_for('salt.file') }}"><i class="fa fa-wrench"></i> 配置维护</a>
+                        <li><a href="{{ url_for('salt.file') }}"><i class="fa fa-wrench"></i> 配置维护</a>
                         </li>
                     </ul>
                 </li>
@@ -372,6 +372,19 @@
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="{{ url_for('assets.hosts') }}"><i class="fa fa-desktop"></i> 主机信息</a></li>
+                    </ul>
+                </li>
+
+
+                <li class="treeview active">
+                    <a href="#">
+                        <i class="fa fa-cloud-upload"></i> <span>发布系统</span>
+                        <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="active"><a href="{{ url_for('deploy.project') }}"><i class="fa fa-cubes"></i> 项目管理</a></li>
                     </ul>
                 </li>
 
