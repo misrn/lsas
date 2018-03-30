@@ -44,7 +44,7 @@ def projectmg():
             fstatus, inputf=commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'].replace("files/", ""),project_name.replace(".","-") + '.sls')) #删除执行文件
             if dstatus == 0 and fstatus ==0:
                 try:
-                    ProjectInfo = Project.query.get(project_name=project_name)
+                    ProjectInfo = db.session.query(Project).filter_by(project_name=project_name).first()
                     db.session.delete(ProjectInfo)
                     db.session.commit()
                     return json.dumps({"code": 1, "msg": u"删除成功!", "data": ""})
@@ -79,8 +79,8 @@ def projectmg():
     - source: salt://%s%s
     - user: %s
     - group: %s
-    - dir_mode: 755
-    - file_mode: 755
+    - dir_mode: 644
+    - file_mode: 644
     - makedirs: True
     - include_empty: True
 """ % (targe_path, app.config['SVN_LOCA_PATH'].replace("/data/salt/salt/", ""), project_name, ugmode, ugmode)
