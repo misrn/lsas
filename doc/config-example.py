@@ -14,3 +14,11 @@ SALT_API_ADDR = "127.0.0.1"
 SALT_API_PROT = '58080'
 SALT_API_USER = 'salt'
 SALT_API_PASSWD = 'salt'
+
+SVN_ADDR = 'http://127.0.0.1:8081/usvn/svn/'
+SVN_BRANCH = 'trunk'
+SVN_LOCA_PATH = '/data/salt/salt/deploy/files/'
+SVN_USER = 'svnco'
+SVN_PASSWD = '123456'
+SVN_CMD = '/usr/bin/svn'
+SVN_TARGET_PATH = '/data/app/'
