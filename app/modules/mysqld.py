@@ -34,6 +34,23 @@ class Project(db.Model):
         self.pre_hosts = pre_hosts
         self.pro_hosts = pro_hosts
 
+
+#代码发布日志表
+class Deploy_logs(db.Model):
+    __tablename__ = 'deploy_logs'
+    id = db.Column(db.Integer(), primary_key=True, nullable=False)
+    deploy_user = db.Column(db.String(255), unique=False, nullable=False)  # 发布用户
+    deploy_project_id = db.Column(db.Integer(), unique=False, nullable=False)  # 项目ID
+    deploy_version = db.Column(db.Integer(), unique=False, nullable=False)  # 发布版本
+    deploy_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 发布时间
+    deploy_txt = db.Column(db.String(255), unique=False, nullable=False)  # 发布备注
+    def __init__(self, deploy_txt, deploy_version, deploy_user, deploy_project_id):
+        self.deploy_txt = deploy_txt
+        self.deploy_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        self.deploy_version = deploy_version
+        self.deploy_user = deploy_user
+        self.deploy_project_id = deploy_project_id
+
 # 主机列表
 class Hosts(db.Model):
     __tablename__ = 'hosts'

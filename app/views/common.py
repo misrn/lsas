@@ -10,6 +10,7 @@ from app import login_manager, app
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+import pysvn
 from datetime import date, datetime
 
 #用户加载回调
@@ -52,3 +53,12 @@ class MyEncoder(json.JSONEncoder):
             return obj.strftime('%Y-%m-%d')
         else:
             return json.JSONEncoder.default(self, obj)
+
+def svn_login(*args):
+    return True, app.config["SVN_USER"], app.config["SVN_PASSWD"], False
+
+
+def Svn_logs(url):  # svn信息函数
+    client = pysvn.Client()
+    client.callback_get_login = svn_login
+    return client.log(url, limit=app.config["SHOW_SVN_LOGS_NUM"], strict_node_history=True, discover_changed_paths=True, )

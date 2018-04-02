@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from app.views.common import *
 import commands
+from sqlalchemy import desc
 
 # 定义蓝图
 deploy = Blueprint('deploy', __name__)
@@ -13,6 +14,13 @@ def project():
     return render_template("deploy/project.html")
 
 
+@deploy.route('/push', methods=["GET", "POST"])
+@login_required  # 登录保护
+def push():
+    g.HostInfo = db.session.query(Hosts).all()
+    return render_template("deploy/push.html")
+
+
 @deploy.route('/projectmg', methods=["GET", "POST"])
 @login_required  # 登录保护
 def projectmg():
@@ -23,9 +31,10 @@ def projectmg():
                 ProjectInfo = db.session.query(Project).all()  # 请求所有项目
                 var = []
                 for i in ProjectInfo:
-                    var.append({"project_name": i.project_name, "add_time": i.add_time, "up_time": i.up_time,
-                                "pro_version": str(i.pro_version), "pre_version": str(i.pre_version),
-                                "type": str(i.type)})
+                    var.append(
+                        {"project_name": i.project_name, "add_time": i.add_time, "up_time": i.up_time, "id": i.id,
+                         "pro_version": str(i.pro_version), "pre_version": str(i.pre_version),
+                         "type": str(i.type)})
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var}, cls=MyEncoder)
             except:
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
@@ -40,9 +49,11 @@ def projectmg():
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
         elif action == "delete":
             project_name = request.form['project_name']
-            dstatus, inputd=commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name)) #删除代码目录
-            fstatus, inputf=commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'].replace("files/", ""),project_name.replace(".","-") + '.sls')) #删除执行文件
-            if dstatus == 0 and fstatus ==0:
+            dstatus, inputd = commands.getstatusoutput(
+                'rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))  # 删除代码目录
+            fstatus, inputf = commands.getstatusoutput('rm -rf %s%s' % (
+                app.config['SVN_LOCA_PATH'].replace("files/", ""), project_name.replace(".", "-") + '.sls'))  # 删除执行文件
+            if dstatus == 0 and fstatus == 0:
                 try:
                     ProjectInfo = db.session.query(Project).filter_by(project_name=project_name).first()
                     db.session.delete(ProjectInfo)
@@ -53,6 +64,72 @@ def projectmg():
             else:
                 return json.dumps({"code": -1, "msg": u"删除失败!", "data": ""})
 
+        elif action == "sinfo":
+            project_id = request.form['project_id']
+            ProjectInfo = Project.query.get(project_id)
+            ProjectDeployLogs = Deploy_logs.query.filter_by(deploy_project_id=project_id).order_by(desc("id")).limit(
+                app.config['SHOW_DEPLOY_LOGS_NUM'])
+            qdata = []
+            for i in ProjectDeployLogs:
+                qdata.append(
+                    {
+                        "deploy_user": i.deploy_user,
+                        "deploy_version": i.deploy_version,
+                        "deploy_time": i.deploy_time,
+                        "deploy_txt": i.deploy_txt
+                    }
+                )
+            Slogs = []
+            for i in Svn_logs(ProjectInfo.svn_addr):
+                try:
+                    message=i.message
+                except:
+                    message=""
+
+                files = []
+                for j in i.changed_paths:
+                    files.append({
+                        "action":j.action,
+                        "path":j.path
+                    })
+
+                Slogs.append({
+                    "revision": int(filter(str.isdigit, str(i.revision))),
+                    "author": i.author,
+                    "time": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(i.date)),
+                    "message": message,
+                    "changed_paths":files
+                })
+            return (json.dumps({"code": 1,
+                                "project_id":project_id,
+                                "pro_version":ProjectInfo.pro_version,
+                                "msg": u"请求数据成功!",
+                                "qdata": qdata,
+                                "sdata":Slogs,
+                                "qnum":app.config['SHOW_DEPLOY_LOGS_NUM'],
+                                "snum":app.config['SHOW_SVN_LOGS_NUM'],
+                                "project_name":ProjectInfo.project_name},cls=MyEncoder)
+                    )
+
+        elif action=="pcode":
+            project_id = request.form['project_id']
+            svn_revision = request.form['svn_revision']
+            ProjectInfo = Project.query.get(project_id)
+
+            cmd = app.config['SVN_CMD'] + '  up  -r  '+ svn_revision +' --username ' + app.config['SVN_USER'] + ' --password ' + app.config[
+                'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
+
+            status, input = commands.getstatusoutput(cmd) #执行代码更新
+            if status == 0:
+                salt = saltAPI(host=app.config['SALT_API_ADDR'], user=app.config['SALT_API_USER'],
+                               password=app.config['SALT_API_USER'], prot=app.config['SALT_API_PROT'])
+
+                for host in ProjectInfo.pro_hosts.split(','):
+                    HostAllInfo = salt.saltCmd({"fun": "state.sls", "client": "local", "tgt": host,"arg":"deploy."+ProjectInfo.project_name})[0]  # 获取所有主机信息
+
+
+
+
 
         elif action == "addproject":
             project_type = request.form['project_type']  # 项目类型
@@ -60,7 +137,9 @@ def projectmg():
             Hosts_pro = request.form['Hosts_pro']  # 生产主机列表
             Hosts_pre = request.form['Hosts_pre']  # 预发布主机列表
             # svn 代码拉取命令
-            cmd = app.config['SVN_CMD'] + '  co --username ' + app.config['SVN_USER'] + ' --password ' + app.config['SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + app.config['SVN_ADDR'] + project_name + '/' + app.config['SVN_BRANCH'] + '  ' + app.config['SVN_LOCA_PATH'] + project_name
+            cmd = app.config['SVN_CMD'] + '  co --username ' + app.config['SVN_USER'] + ' --password ' + app.config[
+                'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + app.config['SVN_ADDR'] + project_name + '/' + \
+                  app.config['SVN_BRANCH'] + '  ' + app.config['SVN_LOCA_PATH'] + project_name
 
             # 根据项目类型进行判断
             if project_type == 'php':
@@ -89,9 +168,14 @@ def projectmg():
                 os.mkdir(app.config['SVN_LOCA_PATH'])
 
             if os.path.exists(app.config['SVN_LOCA_PATH'] + project_name):  # 判断项目代码目录存在的情况
-                repo = os.popen("%s info %s%s|grep 'Repository Root'" % (app.config['SVN_CMD'], app.config['SVN_LOCA_PATH'], project_name)).readlines()[0].replace("Repository Root: ", "").replace("\n", "")
-                branch = os.popen("%s info %s%s|grep 'Relative URL:'" % (app.config['SVN_CMD'], app.config['SVN_LOCA_PATH'], project_name)).readlines()[0].replace("Relative URL: ^/", "").replace("\n", "")
-                if repo + '/' + branch != app.config['SVN_ADDR'] + project_name + '/' + app.config['SVN_BRANCH']:  # 判断svn是否是当前svn地址； 不是则删除目录
+                repo = os.popen("%s info %s%s|grep 'Repository Root'" % (
+                    app.config['SVN_CMD'], app.config['SVN_LOCA_PATH'], project_name)).readlines()[0].replace(
+                    "Repository Root: ", "").replace("\n", "")
+                branch = os.popen("%s info %s%s|grep 'Relative URL:'" % (
+                    app.config['SVN_CMD'], app.config['SVN_LOCA_PATH'], project_name)).readlines()[0].replace(
+                    "Relative URL: ^/", "").replace("\n", "")
+                if repo + '/' + branch != app.config['SVN_ADDR'] + project_name + '/' + app.config[
+                    'SVN_BRANCH']:  # 判断svn是否是当前svn地址； 不是则删除目录
                     commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))
                 else:  # 如果是返回已经存在该项目
                     return (json.dumps({"code": -1, "msg": u"该项目已经存在!", "data": ""}))
@@ -99,8 +183,11 @@ def projectmg():
             status, input = commands.getstatusoutput(cmd)  # 拉取代码到本地
             if status == 0:
                 F = File()
-                fadd = F.fadd(app.config['SVN_LOCA_PATH'].replace("files/", ""),project_name.replace(".", "-") + '.sls') # 创建文件
-                fsave = F.fsave(app.config['SVN_LOCA_PATH'].replace("files/", "") + project_name.replace(".","-") + '.sls', content) # 写入文件
+                fadd = F.fadd(app.config['SVN_LOCA_PATH'].replace("files/", ""),
+                              project_name.replace(".", "-") + '.sls')  # 创建文件
+                fsave = F.fsave(
+                    app.config['SVN_LOCA_PATH'].replace("files/", "") + project_name.replace(".", "-") + '.sls',
+                    content)  # 写入文件
                 if json.loads(fadd)['code'] == 1 and json.loads(fsave)['code'] == 1:
                     try:  # 添加到数据库
                         data = mysqld.Project(
@@ -116,8 +203,9 @@ def projectmg():
                         db.session.commit()
                         return (json.dumps({"code": 1, "msg": u"添加项目成功!", "data": ""}))
                     except:
-                        commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name)) #删除代码目录
-                        commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'].replace("files/", ""),project_name.replace(".","-") + '.sls')) #删除执行文件
+                        commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))  # 删除代码目录
+                        commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'].replace("files/", ""),
+                                                                  project_name.replace(".", "-") + '.sls'))  # 删除执行文件
                         return (json.dumps({"code": -1, "msg": u"添加项目失败!", "data": u"数据库写入失败!"}))
                 else:
                     commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))
