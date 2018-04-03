@@ -22,3 +22,7 @@ SVN_USER = 'user'
 SVN_PASSWD = 'passwd'
 SVN_CMD = '/usr/bin/svn'
 SVN_TARGET_PATH = '/data/app/'
+
+
+SHOW_DEPLOY_LOGS_NUM = 5
+SHOW_SVN_LOGS_NUM = 10
