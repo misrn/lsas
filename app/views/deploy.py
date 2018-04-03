@@ -112,21 +112,45 @@ def projectmg():
                     )
 
         elif action=="pcode":
+            txt = ''
             project_id = request.form['project_id']
             svn_revision = request.form['svn_revision']
-            ProjectInfo = Project.query.get(project_id)
-
-            cmd = app.config['SVN_CMD'] + '  up  -r  '+ svn_revision +' --username ' + app.config['SVN_USER'] + ' --password ' + app.config[
-                'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
-
+            restart = request.form['restart']
+            try:
+                ProjectInfo = Project.query.get(project_id)
+            except:
+                return (json.dumps({"code": -1, "msg": u"项目发布失败!", "data": u"查询项目信息失败"}))
+            cmd = app.config['SVN_CMD'] + '  up  -r  '+ svn_revision +' --username ' + app.config['SVN_USER'] + ' --password ' + app.config['SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
             status, input = commands.getstatusoutput(cmd) #执行代码更新
+            txt += u'<p style="font-weight:bold;color:red;"> svn 更新日志: </p>  <p> %s </p>'%(input)
             if status == 0:
-                salt = saltAPI(host=app.config['SALT_API_ADDR'], user=app.config['SALT_API_USER'],
-                               password=app.config['SALT_API_USER'], prot=app.config['SALT_API_PROT'])
-
-                for host in ProjectInfo.pro_hosts.split(','):
-                    HostAllInfo = salt.saltCmd({"fun": "state.sls", "client": "local", "tgt": host,"arg":"deploy."+ProjectInfo.project_name})[0]  # 获取所有主机信息
-
+                for host in ProjectInfo.pro_hosts.split(','): #循环主机
+                    status, input = commands.getstatusoutput("/usr/bin/salt '%s' state.sls deploy.%s"%(host,ProjectInfo.project_name.replace(".", "-"))) #执行代码同步
+                    txt += u'<p style="font-weight:bold;color:red;"> 代码同步日志: </p>  <p> %s </p>'%(input)
+                    if status == 0 and request.form['restart'] == "y":
+                        status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '/usr/sbin/service %s restart'"%(host,ProjectInfo.project_name)) #重启程序
+                        txt += u'<p style="font-weight:bold;color:red;"> 程序重启日志: </p>  <p> %s </p>'%(input)
+                data = mysqld.Deploy_logs(
+                            deploy_version=svn_revision,
+                            deploy_user=g.user.username,
+                            deploy_project_id=project_id,
+                            deploy_txt=txt
+                )
+                db.session.add(data)
+                ProjectInfo.pro_version = svn_revision
+                db.session.commit()
+                return (json.dumps({"code": 1, "msg": u"项目发布成功!", "data": txt}))
+                        
+            else:
+                data = mysqld.Deploy_logs(
+                            deploy_version=svn_revision,
+                            deploy_user=g.user.username,
+                            deploy_project_id=project_id,
+                            deploy_txt=txt
+                )
+                db.session.add(data)
+                db.session.commit()
+                return (json.dumps({"code": -1, "msg": u"项目发布失败!", "data": u"代码更新失败"}))
 
 
 
@@ -158,10 +182,11 @@ def projectmg():
     - source: salt://%s%s
     - user: %s
     - group: %s
-    - dir_mode: 644
+    - dir_mode: 755
     - file_mode: 644
     - makedirs: True
     - include_empty: True
+    - clean: True
 """ % (targe_path, app.config['SVN_LOCA_PATH'].replace("/data/salt/salt/", ""), project_name, ugmode, ugmode)
 
             if not os.path.exists(app.config['SVN_LOCA_PATH']):  # 判断本地代码目录是否存在，不存在创建
