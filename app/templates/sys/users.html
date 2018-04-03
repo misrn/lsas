@@ -381,6 +381,7 @@
                 </span>
                     </a>
                     <ul class="treeview-menu">
+                        <li><a href="{{ url_for('deploy.push') }}"><i class="fa fa-rocket"></i> 代码发布</a></li>
                         <li><a href="{{ url_for('deploy.project') }}"><i class="fa fa-cubes"></i> 项目管理</a></li>
                     </ul>
                 </li>
@@ -394,7 +395,7 @@
                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li  class="active"><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
+                        <li class="active"><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
                     </ul>
                 </li>
 
@@ -458,7 +459,8 @@
                                         {% endif %}
                                         <td>{{ user.add_time }}</td>
                                         <td>{{ user.login_time }}</td>
-                                        <td onclick="sys_user_del(this,{{ user.id }})"><a href="#"><span class="label label-danger">删除</span></a></td>
+                                        <td onclick="sys_user_del(this,{{ user.id }})"><a href="#"><span
+                                                class="label label-danger">删除</span></a></td>
                                     </tr>
                                 {% endfor %}
 
