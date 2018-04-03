@@ -43,7 +43,7 @@ class Deploy_logs(db.Model):
     deploy_project_id = db.Column(db.Integer(), unique=False, nullable=False)  # 项目ID
     deploy_version = db.Column(db.Integer(), unique=False, nullable=False)  # 发布版本
     deploy_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 发布时间
-    deploy_txt = db.Column(db.String(255), unique=False, nullable=False)  # 发布备注
+    deploy_txt = db.Column(db.Text(), unique=False, nullable=False)  # 发布备注
     def __init__(self, deploy_txt, deploy_version, deploy_user, deploy_project_id):
         self.deploy_txt = deploy_txt
         self.deploy_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())

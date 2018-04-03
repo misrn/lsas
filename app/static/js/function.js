@@ -598,17 +598,33 @@ function show_project_info(project_id) {
 
 
 function push_code(project_id,svn_revision) {
-    $.ajax({
+    layer.prompt({title: "是否重启[y/n]"}, function (restart, index) {
+    layer.msg("代码发布中，请稍后....", {time: 0});
+         $.ajax({
         type: 'post',
         url: '/deploy/projectmg',
         data: {
             "action": 'pcode',
             "project_id": project_id,
-            "svn_revision":svn_revision
+            "svn_revision":svn_revision,
+            "restart": restart
         },
         dataType: 'json',
         success: function (js) {
-        }
+           var obj = js;
+           if (obj.code != 1) {
+                layer.msg(obj.msg)
+            } else {
+                layer.open({
+                type: 1,
+                area: ['820px', '840px'], //宽高
+                content: '<pre>' + obj.data + '</pre>'
+            });
+                layer.msg("代码发布完成,数据请求更新");
+                show_project_info(project_id)
+                 }
+            }
+        });
+      layer.close(index);
     });
-
 }
