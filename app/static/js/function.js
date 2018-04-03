@@ -391,7 +391,7 @@ function deployplist() {
                     trStr += '<td><p style="font-weight:bold">' + obj.data[i].project_name + '/' + obj.data[i].type + '</p></td> ';
                     trStr += '<td> ' + obj.data[i].add_time + '</td>';
                     trStr += '<td> ' + obj.data[i].up_time + '</td>';
-                    trStr += '<td> <a class="btn btn-default btn-xs" onclick=deploypdel("'+obj.data[i].project_name+'")><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
+                    trStr += '<td> <a class="btn btn-default btn-xs" onclick=deploypdel("' + obj.data[i].project_name + '")><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
                         '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
                         '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>详情</a> ' +
                         '</td>';
@@ -497,17 +497,15 @@ function deploy_poject_add_post() {
             },
             dataType: 'json',
             success: function (js) {
-              var obj = js;
-            if (obj.code == 1) {
-                deployplist();
-                layer.close(layer.index);
-              }
+                var obj = js;
+                if (obj.code == 1) {
+                    deployplist();
+                    layer.close(layer.index);
+                }
             }
         });
     }
 }
-
-
 
 
 function deploypushlist() {
@@ -526,11 +524,11 @@ function deploypushlist() {
                 var trStr = '';
                 for (i = 0; i < obj.data.length; i++) {
                     trStr += '<tr> ';
-                    trStr += '<td><p style="font-weight:bold">' + obj.data[i].project_name +'</p></td> ';
+                    trStr += '<td><p style="font-weight:bold">' + obj.data[i].project_name + '</p></td> ';
                     trStr += '<td> ' + obj.data[i].type + '</td>';
                     trStr += '<td> ' + obj.data[i].add_time + '</td>';
 
-                    trStr += '<td> <a class="btn btn-default btn-xs" onclick=show_project_info("'+obj.data[i].id+'")><i class="fa fa-fw fa-cloud-upload"></i>生产发布</a> ' +
+                    trStr += '<td> <a class="btn btn-default btn-xs" onclick=show_project_info("' + obj.data[i].id + '")><i class="fa fa-fw fa-cloud-upload"></i>生产发布</a> ' +
                         '<a class="btn btn-default btn-xs"><i class="fa fa-cloud-upload"></i>预生产发布</a> ' +
                         '</td>';
                     trStr += '</tr> ';
@@ -550,7 +548,7 @@ function show_project_info(project_id) {
         url: '/deploy/projectmg',
         data: {
             "action": 'sinfo',
-            "project_id":project_id
+            "project_id": project_id
         },
         dataType: 'json',
         success: function (js) {
@@ -562,69 +560,96 @@ function show_project_info(project_id) {
                 for (i = 0; i < obj.qdata.length; i++) {
                     dtrStr += '<tr> ';
                     dtrStr += '<td> ' + obj.qdata[i].deploy_version + '</td>';
-                    dtrStr += '<td><p style="font-weight:bold">' + obj.qdata[i].deploy_user +'</p></td> ';
+                    dtrStr += '<td><p style="font-weight:bold">' + obj.qdata[i].deploy_user + '</p></td> ';
                     dtrStr += '<td> ' + obj.qdata[i].deploy_time + '</td>';
+                    dtrStr += '<td> <a href="#" onclick=push_show_log_info("' + obj.qdata[i].id + '")>点击显示</a></td>';
                     dtrStr += '</tr> ';
                 }
 
                 var strStr = '';
                 for (i = 0; i < obj.sdata.length; i++) {
-                    var files='';
-                    for( j=0;j< obj.sdata[i].changed_paths.length;j++){
-                        files += obj.sdata[i].changed_paths[j].action+"---"+obj.sdata[i].changed_paths[j].path+'&#13;'
+                    var files = '';
+                    for (j = 0; j < obj.sdata[i].changed_paths.length; j++) {
+                        files += obj.sdata[i].changed_paths[j].action + "---" + obj.sdata[i].changed_paths[j].path + '&#13;'
                     }
 
                     strStr += '<tr> ';
                     strStr += '<td> ' + obj.sdata[i].revision + '</td>';
-                    strStr += '<td><p style="font-weight:bold">' + obj.sdata[i].author +'</p></td> ';
+                    strStr += '<td><p style="font-weight:bold">' + obj.sdata[i].author + '</p></td> ';
                     strStr += '<td> ' + obj.sdata[i].time + '</td>';
                     strStr += '<td> ' + obj.sdata[i].message + '</td>';
-                    strStr += '<td> <a title='+files+'>显示变更文件</a></td>';
+                    strStr += '<td> <a title=' + files + '>显示变更文件</a></td>';
                     strStr += '<td> <a class="btn btn-default btn-xs" onclick=push_code("' + obj.project_id + '","' + obj.sdata[i].revision + '")><i class="fa fa-fw fa-cloud-upload"></i>发布</a> </td>';
                     strStr += '</tr> ';
                 }
 
                 $('#pushdeploylogs').show();
                 $('#pushdeploylist').hide();
-                $('#show_deploy_info').html("  显示最近"+ obj.qnum +"次");
-                $('#push_project_name').html("<a> 项目名称："+ obj.project_name+"</a> <a> ;当前版本号："+obj.pro_version+"</a>");
-                $('#show_svn_num').html("  显示最近"+ obj.snum +"次");
-               $("#pushProjectinfo").html(dtrStr);
-               $('#pushsinfo').html(strStr);
+                $('#show_deploy_info').html("  显示最近" + obj.qnum + "次");
+                $('#push_project_name').html("<a> 项目名称：" + obj.project_name + "</a> <a> ;当前版本号：" + obj.pro_version + "</a>");
+                $('#show_svn_num').html("  显示最近" + obj.snum + "次");
+                $("#pushProjectinfo").html(dtrStr);
+                $('#pushsinfo').html(strStr);
             }
         }
     });
 }
 
 
-function push_code(project_id,svn_revision) {
+function push_code(project_id, svn_revision) {
     layer.prompt({title: "是否重启[y/n]"}, function (restart, index) {
-    layer.msg("代码发布中，请稍后....", {time: 0});
-         $.ajax({
+        layer.msg("代码发布中，请稍后....", {time: 0});
+        $.ajax({
+            type: 'post',
+            url: '/deploy/projectmg',
+            data: {
+                "action": 'pcode',
+                "project_id": project_id,
+                "svn_revision": svn_revision,
+                "restart": restart
+            },
+            dataType: 'json',
+            success: function (js) {
+                var obj = js;
+                if (obj.code != 1) {
+                    layer.msg(obj.msg)
+                } else {
+                    layer.open({
+                        type: 1,
+                        area: ['820px', '840px'], //宽高
+                        content: '<pre>' + obj.data + '</pre>'
+                    });
+                    layer.msg("代码发布完成,数据请求更新");
+                    show_project_info(project_id)
+                }
+            }
+        });
+        layer.close(index);
+    });
+}
+
+
+function push_show_log_info(log_id) {
+    $.ajax({
         type: 'post',
         url: '/deploy/projectmg',
         data: {
-            "action": 'pcode',
-            "project_id": project_id,
-            "svn_revision":svn_revision,
-            "restart": restart
+            "action": 'loginfo',
+            "log_id": log_id
         },
         dataType: 'json',
         success: function (js) {
-           var obj = js;
-           if (obj.code != 1) {
+            var obj = js;
+            if (obj.code != 1) {
                 layer.msg(obj.msg)
             } else {
                 layer.open({
-                type: 1,
-                area: ['820px', '840px'], //宽高
-                content: '<pre>' + obj.data + '</pre>'
-            });
-                layer.msg("代码发布完成,数据请求更新");
-                show_project_info(project_id)
-                 }
+                    type: 1,
+                    area: ['820px', '840px'], //宽高
+                    content: '<pre>' + obj.data + '</pre>'
+                });
             }
-        });
-      layer.close(index);
+        }
     });
+
 }

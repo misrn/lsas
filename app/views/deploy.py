@@ -73,6 +73,7 @@ def projectmg():
             for i in ProjectDeployLogs:
                 qdata.append(
                     {
+                        "id":i.id,
                         "deploy_user": i.deploy_user,
                         "deploy_version": i.deploy_version,
                         "deploy_time": i.deploy_time,
@@ -152,8 +153,12 @@ def projectmg():
                 db.session.commit()
                 return (json.dumps({"code": -1, "msg": u"项目发布失败!", "data": u"代码更新失败"}))
 
-
-
+        elif action == "loginfo":
+            try:
+                LogInfo = Deploy_logs.query.get(request.form['log_id'])
+                return (json.dumps({"code": 1, "msg": u"请求数据成功!", "data": LogInfo.deploy_txt}))
+            except:
+                return (json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""}))
 
         elif action == "addproject":
             project_type = request.form['project_type']  # 项目类型
