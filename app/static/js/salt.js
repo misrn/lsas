@@ -154,7 +154,7 @@ function saltlistdir(path) {
                 } else {
                     locapath = '';
                 }
-                var addbutth = '<a class="btn btn-default btn-xs" onclick=saltdadd("' + path + '")><i class="fa fa-fw  fa-folder-open"></i> 创建文件夹</a>\n' +
+                var addbutth = '<a class="btn btn-default btn-xs" onclick=returnd("' + path + '")><i class="fa fa-fw  fa-caret-square-o-left"></i> 返回上一级</a>'+                                                                   ' <a class="btn btn-default btn-xs" onclick=saltdadd("' + path + '")><i class="fa fa-fw  fa-folder-open"></i> 创建文件夹</a>' +
                     '                    <a class="btn btn-default btn-xs" onclick=saltfadd("' + path + '")><i class="fa fa-fw  fa-file"></i> 创建文件</a>';
                 $('#list').show();
                 $('#edit').hide();
@@ -166,6 +166,10 @@ function saltlistdir(path) {
     });
 }
 
+
+function returnd(path) {
+    saltlistdir(path.substr(0, path.lastIndexOf('/')))
+}
 function saltdadd(dpath) {
     layer.prompt({title: "输入文件夹名称"}, function (dname, index) {
         $.ajax({

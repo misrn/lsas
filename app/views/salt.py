@@ -19,7 +19,14 @@ def filemg():
         action = request.form['action']
         path = request.form['path']
         path_spl = path.split('/')
-        if path_spl[1] != 'data' and path_spl[2] != 'salt':
+        if len(path_spl) <= 2:
+            data = {
+                "code": -1,
+                "msg": "超出访问权限!",
+                "data": ""
+            }
+            return json.dumps(data) 
+        if path_spl[1] != 'data' or path_spl[2] != 'salt':
             data = {
                 "code": -1,
                 "msg": "超出访问权限!",
