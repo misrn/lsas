@@ -26,3 +26,6 @@ SVN_TARGET_PATH = '/data/app/'
 
 SHOW_DEPLOY_LOGS_NUM = 5
 SHOW_SVN_LOGS_NUM = 10
+
+PHP_MODE = 'apache'
+PHP_ROOT = '/www'
