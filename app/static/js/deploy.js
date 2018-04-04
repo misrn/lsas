@@ -237,7 +237,7 @@ function show_project_data(project_id) {
                     strStr += '<td> ' + obj.sdata[i].time + '</td>';
                     strStr += '<td> ' + obj.sdata[i].message + '</td>';
                     strStr += '<td> <a title=' + files + '>显示变更文件</a></td>';
-                    strStr += '<td> <a class="btn btn-default btn-xs" onclick=push_code("' + obj.project_id + '","' + obj.sdata[i].revision + '")><i class="fa fa-fw fa-cloud-upload"></i>发布</a> </td>';
+                    strStr += '<td> <a class="btn btn-default btn-xs" onclick=push_code("' + obj.project_type + '","' + obj.project_id + '","' + obj.sdata[i].revision + '")><i class="fa fa-fw fa-cloud-upload"></i>发布</a> </td>';
                     strStr += '</tr> ';
                 }
 
@@ -254,36 +254,74 @@ function show_project_data(project_id) {
 }
 
 
-function push_code(project_id, svn_revision) {
-    layer.prompt({title: "是否重启[y/n]"}, function (restart, index) {
-        layer.msg("代码发布中，请稍后....", {time: 0});
-        $.ajax({
-            type: 'post',
-            url: '/deploy/projectmg',
-            data: {
-                "action": 'pcode',
-                "project_id": project_id,
-                "svn_revision": svn_revision,
-                "restart": restart
-            },
-            dataType: 'json',
-            success: function (js) {
-                var obj = js;
-                if (obj.code != 1) {
-                    layer.msg(obj.msg)
-                } else {
-                    layer.open({
-                        type: 1,
-                        area: ['820px', '840px'], //宽高
-                        content: '<pre>' + obj.data + '</pre>'
-                    });
-                    layer.msg("代码发布完成,数据请求更新");
-                    show_project_data(project_id)
-                }
+function push_code(project_type, project_id, svn_revision) {
+    if (project_type == "php") {
+        layer.msg('确定发布该版本?', {
+            time: 0 //不自动关闭
+            , btn: ['确定', '取消']
+            , yes: function (index) {
+                layer.msg("代码发布中，请稍后....", {time: 0});
+                layer.close(index);
+                $.ajax({
+                    type: 'post',
+                    url: '/deploy/projectmg',
+                    data: {
+                        "action": 'pcode',
+                        "project_id": project_id,
+                        "svn_revision": svn_revision,
+                        "restart": "n"
+                    },
+                    dataType: 'json',
+                    success: function (js) {
+                        var obj = js;
+                        if (obj.code != 1) {
+                            layer.msg(obj.msg)
+                        } else {
+                            layer.open({
+                                type: 1,
+                                area: ['820px', '840px'], //宽高
+                                content: '<pre>' + obj.data + '</pre>'
+                            });
+                            layer.msg("代码发布完成,数据请求更新");
+                            show_project_data(project_id)
+                        }
+                    }
+                });
+                layer.close(index);
             }
         });
-        layer.close(index);
-    });
+
+    } else {
+        layer.prompt({title: "是否重启[y/n]"}, function (restart, index) {
+            layer.msg("代码发布中，请稍后....", {time: 0});
+            $.ajax({
+                type: 'post',
+                url: '/deploy/projectmg',
+                data: {
+                    "action": 'pcode',
+                    "project_id": project_id,
+                    "svn_revision": svn_revision,
+                    "restart": restart
+                },
+                dataType: 'json',
+                success: function (js) {
+                    var obj = js;
+                    if (obj.code != 1) {
+                        layer.msg(obj.msg)
+                    } else {
+                        layer.open({
+                            type: 1,
+                            area: ['820px', '840px'], //宽高
+                            content: '<pre>' + obj.data + '</pre>'
+                        });
+                        layer.msg("代码发布完成,数据请求更新");
+                        show_project_data(project_id)
+                    }
+                }
+            });
+            layer.close(index);
+        });
+    }
 }
 
 

@@ -126,6 +126,7 @@ def projectmg():
                 })
             return (json.dumps({"code": 1,
                                 "project_id": project_id,
+                                "project_type":ProjectInfo.type,
                                 "pro_version": ProjectInfo.pro_version,
                                 "msg": u"请求数据成功!",
                                 "qdata": qdata,
