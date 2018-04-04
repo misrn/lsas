@@ -77,7 +77,7 @@ def hosts_up():
                         HostInfo.num_cpus = HostAllInfo[host]['num_cpus']
                         HostInfo.up_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                         # eth0_ipaddr=HostAllInfo[host]['ip4_interfaces']['eth0'][0]
-                        HostInfo.eth0_ipaddr = ""
+                        HostInfo.eth0_ipaddr = ipaddr
                 db.session.commit()
             return rep_json(1,"更新主机信息成功!","")
         except:
