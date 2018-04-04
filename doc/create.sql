@@ -52,12 +52,10 @@ CREATE TABLE `hosts` (
   `up_time` datetime DEFAULT NULL COMMENT '更新时间',
   `selinux` varchar(255) DEFAULT NULL COMMENT '服务器selinux状态',
   `status` int(255) DEFAULT NULL COMMENT '主机状态,0 表示离线；1表示正常 ; 其他表示未知',
+  `eth0_ipaddr` varchar(255) DEFAULT NULL COMMENT 'eth0网卡IP地址',
   PRIMARY KEY (`id`),
-  KEY `HK_ENGINE_ROOM_ID` (`selinux`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-
-SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
 -- Table structure for deploy_logs
