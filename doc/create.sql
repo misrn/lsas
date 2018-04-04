@@ -39,6 +39,11 @@ CREATE TABLE `project` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for hosts
+-- ----------------------------
 DROP TABLE IF EXISTS `hosts`;
 CREATE TABLE `hosts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -53,7 +58,7 @@ CREATE TABLE `hosts` (
   `selinux` varchar(255) DEFAULT NULL COMMENT '服务器selinux状态',
   `status` int(255) DEFAULT NULL COMMENT '主机状态,0 表示离线；1表示正常 ; 其他表示未知',
   `eth0_ipaddr` varchar(255) DEFAULT NULL COMMENT 'eth0网卡IP地址',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
