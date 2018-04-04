@@ -201,11 +201,13 @@ def projectmg():
 
             # 根据项目类型进行判断
             if project_type == 'php':
-                ugmode = 'apache'
+                ugmode = app.config['PHP_MODE']
             else:
                 ugmode = project_name
             if project_type == 'tomcat':
                 targe_path = app.config['SVN_TARGET_PATH'] + project_name + '/webapps/ROOT'
+            elif project_type == 'php':
+                targe_path = app.config['SVN_TARGET_PATH'] + project_name + app.config['PHP_ROOT']
             else:
                 targe_path = app.config['SVN_TARGET_PATH'] + project_name
 
