@@ -39,6 +39,29 @@ def projectmg():
             except:
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
 
+        elif action == "pinfo":
+
+            id = request.form['project_id']
+            ProjectInfo = Project.query.get(id)
+            data = {
+                "项目ID": ProjectInfo.id,
+                "项目名称": ProjectInfo.project_name,
+                "添加时间": ProjectInfo.add_time,
+                "更新时间": ProjectInfo.up_time,
+                "预生产当前版本": ProjectInfo.pre_version,
+                "生产当前版本": ProjectInfo.pro_version,
+                "项目类型": ProjectInfo.type,
+                "Svn地址": ProjectInfo.svn_addr,
+                "远端路径": ProjectInfo.app_path,
+                "本地路径": ProjectInfo.loca_path,
+                "预生产主机列表": ProjectInfo.pre_hosts,
+                "生产主机列表": ProjectInfo.pro_hosts
+            }
+
+            return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data},cls=MyEncoder)
+
+
+
         elif action == "listhosts":  # 请求所有主机
             try:
                 var = []
@@ -73,7 +96,7 @@ def projectmg():
             for i in ProjectDeployLogs:
                 qdata.append(
                     {
-                        "id":i.id,
+                        "id": i.id,
                         "deploy_user": i.deploy_user,
                         "deploy_version": i.deploy_version,
                         "deploy_time": i.deploy_time,
@@ -83,15 +106,15 @@ def projectmg():
             Slogs = []
             for i in Svn_logs(ProjectInfo.svn_addr):
                 try:
-                    message=i.message
+                    message = i.message
                 except:
-                    message=""
+                    message = ""
 
                 files = []
                 for j in i.changed_paths:
                     files.append({
-                        "action":j.action,
-                        "path":j.path
+                        "action": j.action,
+                        "path": j.path
                     })
 
                 Slogs.append({
@@ -99,20 +122,20 @@ def projectmg():
                     "author": i.author,
                     "time": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(i.date)),
                     "message": message,
-                    "changed_paths":files
+                    "changed_paths": files
                 })
             return (json.dumps({"code": 1,
-                                "project_id":project_id,
-                                "pro_version":ProjectInfo.pro_version,
+                                "project_id": project_id,
+                                "pro_version": ProjectInfo.pro_version,
                                 "msg": u"请求数据成功!",
                                 "qdata": qdata,
-                                "sdata":Slogs,
-                                "qnum":app.config['SHOW_DEPLOY_LOGS_NUM'],
-                                "snum":app.config['SHOW_SVN_LOGS_NUM'],
-                                "project_name":ProjectInfo.project_name},cls=MyEncoder)
+                                "sdata": Slogs,
+                                "qnum": app.config['SHOW_DEPLOY_LOGS_NUM'],
+                                "snum": app.config['SHOW_SVN_LOGS_NUM'],
+                                "project_name": ProjectInfo.project_name}, cls=MyEncoder)
                     )
 
-        elif action=="pcode":
+        elif action == "pcode":
             txt = ''
             project_id = request.form['project_id']
             svn_revision = request.form['svn_revision']
@@ -121,33 +144,38 @@ def projectmg():
                 ProjectInfo = Project.query.get(project_id)
             except:
                 return (json.dumps({"code": -1, "msg": u"项目发布失败!", "data": u"查询项目信息失败"}))
-            cmd = app.config['SVN_CMD'] + '  up  -r  '+ svn_revision +' --username ' + app.config['SVN_USER'] + ' --password ' + app.config['SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
-            status, input = commands.getstatusoutput(cmd) #执行代码更新
-            txt += u'<p style="font-weight:bold;color:red;"> svn 更新日志: </p>  <p> %s </p>'%(input)
+            cmd = app.config['SVN_CMD'] + '  up  -r  ' + svn_revision + ' --username ' + app.config[
+                'SVN_USER'] + ' --password ' + app.config[
+                      'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
+            status, input = commands.getstatusoutput(cmd)  # 执行代码更新
+            txt += u'<p style="font-weight:bold;color:red;"> svn 更新日志: </p>  <p> %s </p>' % (input)
             if status == 0:
-                for host in ProjectInfo.pro_hosts.split(','): #循环主机
-                    status, input = commands.getstatusoutput("/usr/bin/salt '%s' state.sls deploy.%s"%(host,ProjectInfo.project_name.replace(".", "-"))) #执行代码同步
-                    txt += u'<p style="font-weight:bold;color:red;"> 代码同步日志: </p>  <p> %s </p>'%(input)
+                for host in ProjectInfo.pro_hosts.split(','):  # 循环主机
+                    status, input = commands.getstatusoutput("/usr/bin/salt '%s' state.sls deploy.%s" % (
+                    host, ProjectInfo.project_name.replace(".", "-")))  # 执行代码同步
+                    txt += u'<p style="font-weight:bold;color:red;"> 代码同步日志: </p>  <p> %s </p>' % (input)
                     if status == 0 and request.form['restart'] == "y":
-                        status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '/usr/sbin/service %s restart'"%(host,ProjectInfo.project_name)) #重启程序
-                        txt += u'<p style="font-weight:bold;color:red;"> 程序重启日志: </p>  <p> %s </p>'%(input)
+                        status, input = commands.getstatusoutput(
+                            "/usr/bin/salt '%s' cmd.run '/usr/sbin/service %s restart'" % (
+                            host, ProjectInfo.project_name))  # 重启程序
+                        txt += u'<p style="font-weight:bold;color:red;"> 程序重启日志: </p>  <p> %s </p>' % (input)
                 data = mysqld.Deploy_logs(
-                            deploy_version=svn_revision,
-                            deploy_user=g.user.username,
-                            deploy_project_id=project_id,
-                            deploy_txt=txt
+                    deploy_version=svn_revision,
+                    deploy_user=g.user.username,
+                    deploy_project_id=project_id,
+                    deploy_txt=txt
                 )
                 db.session.add(data)
                 ProjectInfo.pro_version = svn_revision
                 db.session.commit()
                 return (json.dumps({"code": 1, "msg": u"项目发布成功!", "data": txt}))
-                        
+
             else:
                 data = mysqld.Deploy_logs(
-                            deploy_version=svn_revision,
-                            deploy_user=g.user.username,
-                            deploy_project_id=project_id,
-                            deploy_txt=txt
+                    deploy_version=svn_revision,
+                    deploy_user=g.user.username,
+                    deploy_project_id=project_id,
+                    deploy_txt=txt
                 )
                 db.session.add(data)
                 db.session.commit()

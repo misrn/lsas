@@ -1,4 +1,3 @@
-
 function deployplist() {
     $.ajax({
         type: 'post',
@@ -19,8 +18,8 @@ function deployplist() {
                     trStr += '<td> ' + obj.data[i].add_time + '</td>';
                     trStr += '<td> ' + obj.data[i].up_time + '</td>';
                     trStr += '<td> <a class="btn btn-default btn-xs" onclick=deploypdel("' + obj.data[i].project_name + '")><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
-                        '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
-                        '<a class="btn btn-default btn-xs"><i class="fa fa-fw fa-edit"></i>详情</a> ' +
+                        '<a class="btn btn-default btn-xs" ><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
+                        '<a class="btn btn-default btn-xs" onclick=show_project_info("' + obj.data[i].id + '")><i class="fa fa-fw fa-edit"></i>详情</a> ' +
                         '</td>';
                     trStr += '</tr> ';
                 }
@@ -30,6 +29,38 @@ function deployplist() {
     });
 }
 
+
+//查看项目详细信息
+function show_project_info(project_id) {
+    layer.load(1);
+    $.ajax({
+        type: 'post',
+        url: '/deploy/projectmg',
+        data: {
+            "project_id": project_id,
+            "action": 'pinfo'
+        },
+        dataType: 'json',
+        success: function (js) {
+            var obj = js;
+            if (obj.code == 1) {
+                layer.open({
+                    type: 1,
+                    area: ['820px', '400px'], //宽高
+                    content: '<pre>' + syntaxHighlight(obj.data) + '</pre>'
+                });
+            } else {
+                layer.msg(obj.msg)
+            }
+        }
+    });
+
+
+    setTimeout(function () {
+        layer.closeAll('loading');
+    }, 2000);
+
+}
 
 function deploypdel(project_name) {
     layer.msg('你确定删除该项目?', {
@@ -155,7 +186,7 @@ function deploypushlist() {
                     trStr += '<td> ' + obj.data[i].type + '</td>';
                     trStr += '<td> ' + obj.data[i].add_time + '</td>';
 
-                    trStr += '<td> <a class="btn btn-default btn-xs" onclick=show_project_info("' + obj.data[i].id + '")><i class="fa fa-fw fa-cloud-upload"></i>生产发布</a> ' +
+                    trStr += '<td> <a class="btn btn-default btn-xs" onclick=show_project_data("' + obj.data[i].id + '")><i class="fa fa-fw fa-cloud-upload"></i>生产发布</a> ' +
                         '<a class="btn btn-default btn-xs"><i class="fa fa-cloud-upload"></i>预生产发布</a> ' +
                         '</td>';
                     trStr += '</tr> ';
@@ -169,7 +200,7 @@ function deploypushlist() {
     });
 }
 
-function show_project_info(project_id) {
+function show_project_data(project_id) {
     $.ajax({
         type: 'post',
         url: '/deploy/projectmg',
@@ -247,7 +278,7 @@ function push_code(project_id, svn_revision) {
                         content: '<pre>' + obj.data + '</pre>'
                     });
                     layer.msg("代码发布完成,数据请求更新");
-                    show_project_info(project_id)
+                    show_project_data(project_id)
                 }
             }
         });
