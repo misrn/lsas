@@ -268,11 +268,20 @@ function salt_cmd_post(){
             success: function (res) {
             layer.msg("数据加载完成!");
             if (res.code == 1) {
+               if (res.mode == "json"){
+            layer.open({
+                type: 1,
+                area: ['820px', '840px'], //宽高
+                content: '<pre>' + syntaxHighlight(res.data) + '</pre>'
+            });
+              }else {
             layer.open({
                 type: 1,
                 area: ['820px', '840px'], //宽高
                 content: '<pre>' + res.data + '</pre>'
             });
+
+            }
         }else{
           layer.msg(res.data)
          }

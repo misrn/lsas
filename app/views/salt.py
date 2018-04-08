@@ -100,7 +100,35 @@ def cmdmg():
             for cmd in app.config['SALT_CMD_EXCLUDE'].split(','):
                 if cmd in salt_cmd_mode_info:
                     return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": "检查命令规范!"})
-            data = ''
+            if salt_cmd_mode == "cmd.run":
+                data = ''
+                mode = 'txt'
+            else:
+                data = []
+                mode = 'json'
             for host in salt_cmd_hosts.split(','):
-                data += u'<p style="font-weight:bold;color:red;"> 主机:%s 执行结果: </p>%s ' % (host,salt.saltCmd({"fun": salt_cmd_mode, "client": "local", "tgt": host , "arg":salt_cmd_mode_info})[0][host])
-            return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data})
+                info = salt.saltCmd({"fun": salt_cmd_mode, "client": "local", "tgt": host , "arg":salt_cmd_mode_info})[0]
+                if salt_cmd_mode == "cmd.run":
+                    data += u'<p style="font-weight:bold;color:red;"> 主机:%s 执行结果: </p>%s ' % (host,info[host])
+                else:
+                    data.append(info)
+            return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data,"mode":mode})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
