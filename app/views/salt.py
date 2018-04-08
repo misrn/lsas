@@ -71,12 +71,36 @@ def cmd():
 def cmdmg():
     if request.method == 'POST':
         action = request.form['action']
-        if action == "listhosts":
+        if action == "info":
+            path='/data/salt/salt'
+            F = File()
+            info=F.listdir(path)
+            sdata=[]
+            for i in json.loads(info)['data']:
+                if i["isdir"] == True:
+                    finfo=F.listdir(path+'/'+i["name"])
+                    for j in json.loads(finfo)['data']:
+                        if j['isdir'] == False and j['islnk'] == False:
+                            if j["name"] == "init.sls":
+                                sdata.append(i['name'])
+                            else:
+                                sdata.append( (i['name']+'.'+j['name']).replace(".sls", ""))
             try:
                 var = []
                 for i in db.session.query(Hosts).all():
                     var.append({"hostname": i.hostname})
-                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var})
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var, "sdata":sdata})
             except:
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
-
+        if action == "cmd_execute":
+            salt_cmd_mode_info = request.form['salt_cmd_mode_info']
+            salt_cmd_mode = request.form['salt_cmd_mode']
+            salt_cmd_hosts = request.form['hosts']
+            salt = saltAPI(host=app.config['SALT_API_ADDR'], user=app.config['SALT_API_USER'],password=app.config['SALT_API_USER'], prot=app.config['SALT_API_PROT'])
+            for cmd in app.config['SALT_CMD_EXCLUDE'].split(','):
+                if cmd in salt_cmd_mode_info:
+                    return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": "检查命令规范!"})
+            data = ''
+            for host in salt_cmd_hosts.split(','):
+                data += u'<p style="font-weight:bold;color:red;"> 主机:%s 执行结果: </p>%s ' % (host,salt.saltCmd({"fun": salt_cmd_mode, "client": "local", "tgt": host , "arg":salt_cmd_mode_info})[0][host])
+            return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data})

@@ -220,20 +220,89 @@ function saltfadd(dpath) {
     });
 }
 
+function salt_cmd_mode_type(){
+    if(document.getElementById("salt_cmd_mode_type").checked){
+    $('#salt_cmd_mode_text').show();
+    $('#salt_cmd_mode_select').hide();
+   }else{
+    $('#salt_cmd_mode_select').show();
+    $('#salt_cmd_mode_text').hide();
+   }
+
+}
+
+
+function salt_cmd_post(){
+        sal_cmd_hosts = document.getElementsByName("sal_cmd_hosts");
+        Hosts = [];
+        for (k in sal_cmd_hosts) {
+            if (sal_cmd_hosts[k].checked)
+                Hosts.push(sal_cmd_hosts[k].value);
+        }
+        if (Hosts == ""){
+           layer.msg("请选择主机!")
+        }
+        var salt_cmd_mode = document.getElementById("salt_cmd_mode").value;
+        if (salt_cmd_mode == ""){
+           layer.msg("请选择模块!")
+        }
+        if(document.getElementById("salt_cmd_mode_type").checked){
+           var salt_cmd_mode_info = document.getElementById("salt_cmd_mode_text_info").value;
+        }else {
+           var salt_cmd_mode_info = document.getElementById("salt_cmd_mode_select_info").value;
+        }
+        if (salt_cmd_mode_info == ""){
+           layer.msg("请输入/选择命令!")
+        }
+        layer.msg("数据加载中，请稍后....", {time: 0});
+        $.ajax({
+            type: 'post',
+            url: '/salt/cmdmg',
+            data: {
+                "action": 'cmd_execute',
+                "hosts": Hosts.toString(),
+                "salt_cmd_mode": salt_cmd_mode,
+                "salt_cmd_mode_info": salt_cmd_mode_info
+            },
+            dataType: 'json',
+            success: function (res) {
+            layer.msg("数据加载完成!");
+            if (res.code == 1) {
+            layer.open({
+                type: 1,
+                area: ['820px', '840px'], //宽高
+                content: '<pre>' + res.data + '</pre>'
+            });
+        }else{
+          layer.msg(res.data)
+         }
+
+        }
+        });       
+}
+
 
 function salt_cmd_info() {
     $.ajax({
         type: 'post',
         url: '/salt/cmdmg',
         data: {
-            "action": 'listhosts'
+            "action": 'info'
         },
         dataType: 'json',
         success: function (js) {
             var host_html = '';
             for (i = 0; i < js.data.length; i++) {
-                host_html += '<label style="width: 20%"><input type="checkbox" value="' + js.data[i].hostname + '" name="Hosts_pre" style="vertical-align:middle;"> ' + js.data[i].hostname + '</label>';
+                host_html += '<label style="width: 20%"><input type="checkbox" value="' + js.data[i].hostname + '" name="sal_cmd_hosts" style="vertical-align:middle;"> ' + js.data[i].hostname + '</label>';
             }
+            var cmd_html = '<select class="form-control" name="salt_cmd_mode_info" id="salt_cmd_mode_select_info">' +
+                               ' <option value="" disabled selected style="color: #b6b6b6" >请选择</option>'
+            
+            for (i = 0; i < js.sdata.length; i++) {
+                cmd_html += '<option value="'+ js.sdata[i]+'">'+ js.sdata[i] +'</option>' 
+            }
+            cmd_html += '</select>'
+            $("#salt_cmd_mode_select").html(cmd_html);
             $("#salt_cmd_host").html(host_html);
         }
     });

@@ -422,53 +422,49 @@
                             <div class="checkbox" id="salt_cmd_host">
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
 
 
-                <div class="col-xs-4">
+                <div class="col-xs-6">
                     <div class="box">
                         <div class="box-header">
                             <a class="btn btn-primary btn-xs"> 2.选择模块</a>
                         </div>
                         <div class="box-header">
-                            <select class="form-control" name="project_type" id="project_type">
+                            <select class="form-control" name="salt_cmd_mode" id="salt_cmd_mode">
                                 <option value="" disabled selected style="color: #b6b6b6" >请选择</option>
-                                <option value="php">php</option>
-                                <option value="java">java</option>
-                                <option value="tomcat">tomcat</option>
+                                <option value="state.sls">state.sls</option>
+                                <option value="cmd.run">cmd.run</option>
                             </select>
                         </div>
                     </div>
                     <!-- /.box -->
                 </div>
 
-                <div class="col-xs-4">
+                <div class="col-xs-6">
                     <div class="box">
                         <div class="box-header">
-                            <a class="btn btn-primary btn-xs"> 3.选择模块/命令</a>
+                            <a class="btn btn-primary btn-xs"> 3.选择模块/命令</a> 
+                            <label style="float:right">
+                                 <input type="checkbox" id="salt_cmd_mode_type" onclick="salt_cmd_mode_type()">
+                                    手动输入
+                            </label>
                         </div>
-                        <div class="box-header">
-                            <select class="form-control" name="project_type" id="project_type">
-                                <option value="" disabled selected style="color: #b6b6b6" >请选择</option>
-                                <option value="php">php</option>
-                                <option value="java">java</option>
-                                <option value="tomcat">tomcat</option>
-                            </select>
+                        <div class="box-header" id="salt_cmd_mode_select">
                         </div>
-
-
+                        <div class="box-header" id="salt_cmd_mode_text" style="display: none">
+                           <input class="form-control" type="text" placeholder="输入命令，请谨慎" id="salt_cmd_mode_text_info">
+                        </div>
                     </div>
-                    <!-- /.box -->
                 </div>
 
-                <div class="col-xs-4">
+                <div class="col-xs-12">
                     <div class="box">
                         <div class="box-header">
-                            <a class="btn btn-primary btn-xs"> 4.执行</a>
+                            <a class="btn btn-app" onclick="salt_cmd_post()">
+                               <i class="fa fa-play"></i> 执行
+                            </a>
                         </div>
                     </div>
                     <!-- /.box -->
