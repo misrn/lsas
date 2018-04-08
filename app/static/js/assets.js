@@ -9,7 +9,7 @@ function assets_update_hosts() {
             if (data.code == 1) {
                 location.reload();
             } else {
-                layer.msg(obj2.msg)
+                layer.msg(data.msg)
             }
         }
     });

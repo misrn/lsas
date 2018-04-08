@@ -31,6 +31,7 @@ def host_info():
 def hosts_up():
     if request.method == 'POST':
         try:
+
             # 初始化saltstack api
             salt = saltAPI(host=app.config['SALT_API_ADDR'], user=app.config['SALT_API_USER'],
                            password=app.config['SALT_API_USER'], prot=app.config['SALT_API_PROT'])
@@ -51,35 +52,33 @@ def hosts_up():
                     ipaddr = ""
                 # 查询当前主机信息
                 HostInfo = db.session.query(Hosts).filter_by(hostname=host).first()
-                if HostAllInfo[host] == False:  #离线主机
+                if HostInfo is not None and HostAllInfo[host] == False:  # db主机存在 且 salt返回 false；及主机离线
                     HostInfo.status = "0"
-                else:
-                    if HostInfo is None:  #数据库中不存在的主机
-                        HostData = mysqld.Hosts(
-                            hostname=HostAllInfo[host]['id'],
-                            os=HostAllInfo[host]['os'],
-                            osrelease=HostAllInfo[host]['osrelease'],
-                            kernelrelease=HostAllInfo[host]['kernelrelease'],
-                            selinux=HostAllInfo[host]['selinux']['enforced'],
-                            status="1",
-                            mem_total=HostAllInfo[host]['mem_total'],
-                            num_cpus=HostAllInfo[host]['num_cpus'],
-                            eth0_ipaddr=ipaddr
-                        )
-                        db.session.add(HostData)
-                    else: #数据库中存在的主机
-                        HostInfo.os = HostAllInfo[host]['os']
-                        HostInfo.osrelease = HostAllInfo[host]['osrelease']
-                        HostInfo.kernelrelease = HostAllInfo[host]['kernelrelease']
-                        HostInfo.selinux = HostAllInfo[host]['selinux']['enforced']
-                        HostInfo.status = "1"
-                        HostInfo.mem_total = HostAllInfo[host]['mem_total']
-                        HostInfo.num_cpus = HostAllInfo[host]['num_cpus']
-                        HostInfo.up_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                        # eth0_ipaddr=HostAllInfo[host]['ip4_interfaces']['eth0'][0]
-                        HostInfo.eth0_ipaddr = ipaddr
+                elif HostInfo is None and HostAllInfo[host] != False:  # DB主机不存在且salt 返回不为 false；及新增主机
+                    HostData = mysqld.Hosts(
+                        hostname=HostAllInfo[host]['id'],
+                        os=HostAllInfo[host]['os'],
+                        osrelease=HostAllInfo[host]['osrelease'],
+                        kernelrelease=HostAllInfo[host]['kernelrelease'],
+                        selinux=HostAllInfo[host]['selinux']['enforced'],
+                        status="1",
+                        mem_total=HostAllInfo[host]['mem_total'],
+                        num_cpus=HostAllInfo[host]['num_cpus'],
+                        eth0_ipaddr=ipaddr
+                    )
+                    db.session.add(HostData)
+                elif HostInfo is not None and HostAllInfo[host] != False:  # DB主机存在且 salt 返回不为false ； 及更新主机信息
+                    HostInfo.os = HostAllInfo[host]['os']
+                    HostInfo.osrelease = HostAllInfo[host]['osrelease']
+                    HostInfo.kernelrelease = HostAllInfo[host]['kernelrelease']
+                    HostInfo.selinux = HostAllInfo[host]['selinux']['enforced']
+                    HostInfo.status = "1"
+                    HostInfo.mem_total = HostAllInfo[host]['mem_total']
+                    HostInfo.num_cpus = HostAllInfo[host]['num_cpus']
+                    HostInfo.up_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                    # eth0_ipaddr=HostAllInfo[host]['ip4_interfaces']['eth0'][0]
+                    HostInfo.eth0_ipaddr = ipaddr
                 db.session.commit()
-            return rep_json(1,"更新主机信息成功!","")
+            return rep_json(1, "更新主机信息成功!", "")
         except:
-            return rep_json(-1,"更新主机信息失败!","")
-
+            return rep_json(-1, "更新主机信息失败!", "")
