@@ -57,3 +57,26 @@ def filemg():
         elif action == "fsave":
             content = request.form["content"]
             return F.fsave(path, content)
+
+
+
+@salt.route('/cmd', methods=["GET", "POST"])
+@login_required  # 登录保护
+def cmd():
+    return render_template("salt/cmd.html")
+
+
+@salt.route('/cmdmg', methods=["GET", "POST"])
+@login_required  # 登录保护
+def cmdmg():
+    if request.method == 'POST':
+        action = request.form['action']
+        if action == "listhosts":
+            try:
+                var = []
+                for i in db.session.query(Hosts).all():
+                    var.append({"hostname": i.hostname})
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var})
+            except:
+                return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+

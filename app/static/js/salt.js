@@ -219,3 +219,22 @@ function saltfadd(dpath) {
         layer.close(index);
     });
 }
+
+
+function salt_cmd_info() {
+    $.ajax({
+        type: 'post',
+        url: '/salt/cmdmg',
+        data: {
+            "action": 'listhosts'
+        },
+        dataType: 'json',
+        success: function (js) {
+            var host_html = '';
+            for (i = 0; i < js.data.length; i++) {
+                host_html += '<label style="width: 20%"><input type="checkbox" value="' + js.data[i].hostname + '" name="Hosts_pre" style="vertical-align:middle;"> ' + js.data[i].hostname + '</label>';
+            }
+            $("#salt_cmd_host").html(host_html);
+        }
+    });
+}
