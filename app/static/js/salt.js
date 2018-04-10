@@ -155,9 +155,10 @@ function saltlistdir(path) {
                     locapath = '';
                 }
                 var addbutth = '<a class="btn btn-default btn-xs" onclick=returnd("' + path + '")><i class="fa fa-fw  fa-caret-square-o-left"></i> 返回上一级</a>'+                                                                   ' <a class="btn btn-default btn-xs" onclick=saltdadd("' + path + '")><i class="fa fa-fw  fa-folder-open"></i> 创建文件夹</a>' +
-                    '                    <a class="btn btn-default btn-xs" onclick=saltfadd("' + path + '")><i class="fa fa-fw  fa-file"></i> 创建文件</a>';
+                    ' <a class="btn btn-default btn-xs" onclick=saltfadd("' + path + '")><i class="fa fa-fw  fa-file"></i> 创建文件</a> <a class="btn btn-default btn-xs" onclick=saltsvnstatus()><i class="fa fa-fw  fa-caret-square-o-up"></i> 提交仓库</a>';
                 $('#list').show();
                 $('#edit').hide();
+                $('#salt_svn_info').hide();
                 $("#locapath").html(locapath); //更改目录导航
                 $("#filelist").html(trStr);
                 $("#add-new-path").html(addbutth);
@@ -165,6 +166,79 @@ function saltlistdir(path) {
         }
     });
 }
+
+function saltsvnstatus(){
+        $.ajax({
+            type: 'post',
+            url: '/salt/svnmg',
+            data: {
+                "action": 'status',
+            },
+            dataType: 'json',
+            success: function (js) {
+                //var obj = JSON.parse(js);
+                var obj = js;
+                if (obj.code == 1) {
+                   var Str = '';
+                   for (i = 0; i < js.data.length; i++) {
+                      Str += '<label style="width: 100%;font-weight:40;font-family:courier"><input type="checkbox" value="' + js.data[i] + '" name="svn_path" style="font-weight:1;">'+ js.data[i]+'</label>'
+                   }
+                   $("#salt_show_svn_st").html(Str);
+                   $('#list').hide();
+                   $('#salt_svn_info').show();
+                } else {
+                    layer.msg(obj.msg)
+                }
+            }
+        });
+}
+
+function saltsvnci(){
+        var ci_passwd = document.getElementById("ci_passwd").value;
+        var ci_text = document.getElementById("ci_text").value;
+        if (ci_passwd == ""){
+            layer.msg("请输入密码!")
+        } else if (ci_text == ""){
+            layer.msg("请输入本次提交备注!")
+        } else {
+
+
+
+        obj = document.getElementsByName("svn_path");
+        paths = [];
+        for (k in obj) {
+            if (obj[k].checked)
+                paths.push(obj[k].value);
+        }
+        $.ajax({
+            type: 'post',
+            url: '/salt/svnmg',
+            data: {
+                "action": 'commit',
+                "paths": paths.toString(),
+                "ci_text": ci_text,
+                "ci_passwd": ci_passwd
+            },  
+            dataType: 'json',
+            success: function (js) {
+                //var obj = JSON.parse(js);
+                var obj = js;
+                if (obj.code == 1) {
+                    saltsvnstatus();
+                    layer.open({
+                    type: 1,
+                    area: ['820px', '840px'], //宽高
+                    content: '<pre>' + obj.data + '</pre>'
+                    });
+                } else {
+                    layer.msg(obj.msg)
+                }
+            }
+        });
+}
+}
+
+
 
 
 function returnd(path) {
@@ -268,11 +342,20 @@ function salt_cmd_post(){
             success: function (res) {
             layer.msg("数据加载完成!");
             if (res.code == 1) {
+               if (res.mode == "json"){
+            layer.open({
+                type: 1,
+                area: ['820px', '840px'], //宽高
+                content: '<pre>' + syntaxHighlight(res.data) + '</pre>'
+            });
+              }else {
             layer.open({
                 type: 1,
                 area: ['820px', '840px'], //宽高
                 content: '<pre>' + res.data + '</pre>'
             });
+
+            }
         }else{
           layer.msg(res.data)
          }
@@ -307,3 +390,4 @@ function salt_cmd_info() {
         }
     });
 }
+

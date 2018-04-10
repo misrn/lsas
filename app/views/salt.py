@@ -5,6 +5,33 @@ from app.views.common import *
 salt = Blueprint('salt', __name__)
 
 
+
+@salt.route('/svnmg', methods=["GET", "POST"])
+@login_required  # 登录保护
+def svnmg():
+    if request.method == 'POST':
+        action = request.form['action']
+        if action == "status":
+           try:
+               data = os.popen(app.config['SVN_CMD']+" status /data/salt | grep -v 'salt/deploy'").readlines()
+               return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data})
+           except:
+               return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+        elif action == "commit":
+            paths = request.form['paths']
+            ci_text = request.form['ci_text']
+            ci_passwd = request.form['ci_passwd']
+            try:
+                for path in paths.split(','):
+                    if path.replace("\n", "").split('       ')[0] == "?":
+                        os.popen(app.config['SVN_CMD']+" add "+path.replace("\n", "").split('       ')[1])
+                    elif path.replace("\n", "").split('       ')[0] == "!":
+                        os.popen(app.config['SVN_CMD']+" delete "+path.replace("\n", "").split('       ')[1])
+                data = os.popen(app.config['SVN_CMD']+" ci -m '"+ci_text+"' --username "+ g.user.username +" --password "+ci_passwd+" --no-auth-cache /data/salt").readlines()
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data })
+            except:
+                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+
 @salt.route('/file', methods=["GET", "POST"])
 @login_required  # 登录保护
 def file():

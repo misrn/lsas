@@ -424,7 +424,7 @@
                             salt </a> /
                             <span id="locapath"></span>
                         </div>
-                        <div id="add-new-path"></div>
+                        <div class="box-header" id="add-new-path"></div>
                         <!-- /.box-header -->
                         <div class="box-body table-responsive no-padding">
                             <table class="table table-hover">
@@ -454,6 +454,45 @@
                 </div>
                 <div id="editor"></div> <!--文件内容 -->
             </div>
+
+            <div class="row" id="salt_svn_info" style="display: none">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h4>文件变更列表</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                               <div class="col-xs-6">
+                                  <input type="text" class="form-control" placeholder="{{ g.user.username }}" disabled>
+                               </div>
+                               <div class="col-xs-6">
+                                  <input type="password" class="form-control" placeholder="提交密码" name="ci_passwd" id="ci_passwd">
+                               </div>
+                            </div>
+                        </div>
+                        <div class="box-body"> 
+                            <div class="row">
+                               <div class="col-xs-12">
+                                  <input type="text" class="form-control" placeholder="备注信息" name="ci_text" id="ci_text">
+                               </div>
+                            </div>
+
+                        </div>
+                        <div class="box-header"> 
+                            <a class="btn btn-default btn-xs" onclick="saltlistdir('/data/salt')"><i class="fa fa-fw  fa-caret-square-o-left"></i> 返回目录</a>  
+                            <a class="btn btn-default btn-xs" onclick="saltsvnci()"><i class="fa fa-fw  fa-caret-square-o-up"></i> 提交</a> 
+                       </div>
+                        <!-- /.box-header -->
+                        <div class="box-body" id="salt_show_svn_st">
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+
 
         </section>
         <!-- /.content -->
