@@ -35,6 +35,8 @@ def svnmg():
 @salt.route('/file', methods=["GET", "POST"])
 @login_required  # 登录保护
 def file():
+    cmd = app.config['SVN_CMD'] + '  up  --username ' + app.config['SVN_USER'] + ' --password ' + app.config['SVN_PASSWD'] + '  --no-auth-cache --non-interactive /data/salt'
+    data=os.popen(cmd).readlines()
     return render_template("salt/file.html")
 
 
