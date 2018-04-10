@@ -179,7 +179,7 @@ function saltsvnstatus(){
                 //var obj = JSON.parse(js);
                 var obj = js;
                 if (obj.code == 1) {
-                   var Str = '';
+                   var Str = '<input type="checkbox"  id="hxy" onclick="salt_on()"/>全选/不全选';
                    for (i = 0; i < js.data.length; i++) {
                       Str += '<label style="width: 100%;font-weight:40;font-family:courier"><input type="checkbox" value="' + js.data[i] + '" name="svn_path" style="font-weight:1;">'+ js.data[i]+'</label>'
                    }
@@ -191,6 +191,19 @@ function saltsvnstatus(){
                 }
             }
         });
+}
+
+function salt_on(){
+   var ch=document.getElementsByName("svn_path");
+   if(document.getElementById("hxy").checked){
+      for (var i=0;i<ch.length;i++){
+          ch[i].checked=true;
+      }
+   } else {
+      for (var i=0;i<ch.length;i++){
+          ch[i].checked=false;
+      }
+   }
 }
 
 function saltsvnci(){
