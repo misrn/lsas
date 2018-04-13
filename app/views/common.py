@@ -62,3 +62,14 @@ def Svn_logs(url):  # svn信息函数
     client = pysvn.Client()
     client.callback_get_login = svn_login
     return client.log(url, limit=app.config["SHOW_SVN_LOGS_NUM"], strict_node_history=True, discover_changed_paths=True, )
+
+
+#写入日志
+def Out_logs(type,tex):
+    data = mysqld.Operation_logs(
+        user=g.user.username,
+        type=type,
+        tex=tex
+    )
+    db.session.add(data)
+    db.session.commit()

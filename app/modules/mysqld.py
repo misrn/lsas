@@ -9,7 +9,25 @@ import time
 # nullable 如果为True 允许使用空值
 # default 设置默认值
 
-#项目表
+
+
+# 操作日志表
+class Operation_logs(db.Model):
+    __tablename__ = 'operation_logs'
+    id = db.Column(db.Integer(), primary_key=True, nullable=False)
+    user = db.Column(db.String(255), unique=False, nullable=False)  # 用户
+    type = db.Column(db.String(255), unique=False, nullable=False)  # 类型
+    time = db.Column(db.DateTime(), unique=False, nullable=True)  # 时间
+    tex = db.Column(db.String(255), unique=False, nullable=False)  # 项目类型
+
+    def __init__(self, type, tex, user):
+        self.user = user
+        self.time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        self.type = type
+        self.tex = tex
+
+
+# 项目表
 class Project(db.Model):
     __tablename__ = 'project'
     id = db.Column(db.Integer(), primary_key=True, nullable=False)
@@ -24,6 +42,7 @@ class Project(db.Model):
     loca_path = db.Column(db.String(255), unique=False, nullable=False)  # 本地路径
     pre_hosts = db.Column(db.String(255), unique=False, nullable=False)  # 预发布服务器地址
     pro_hosts = db.Column(db.String(255), unique=False, nullable=False)  # 生产服务器地址
+
     def __init__(self, project_name, type, svn_addr, app_path, loca_path, pre_hosts, pro_hosts):
         self.project_name = project_name
         self.add_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -35,7 +54,7 @@ class Project(db.Model):
         self.pro_hosts = pro_hosts
 
 
-#代码发布日志表
+# 代码发布日志表
 class Deploy_logs(db.Model):
     __tablename__ = 'deploy_logs'
     id = db.Column(db.Integer(), primary_key=True, nullable=False)
@@ -44,12 +63,14 @@ class Deploy_logs(db.Model):
     deploy_version = db.Column(db.Integer(), unique=False, nullable=False)  # 发布版本
     deploy_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 发布时间
     deploy_txt = db.Column(db.Text(), unique=False, nullable=False)  # 发布备注
+
     def __init__(self, deploy_txt, deploy_version, deploy_user, deploy_project_id):
         self.deploy_txt = deploy_txt
         self.deploy_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         self.deploy_version = deploy_version
         self.deploy_user = deploy_user
         self.deploy_project_id = deploy_project_id
+
 
 # 主机列表
 class Hosts(db.Model):
