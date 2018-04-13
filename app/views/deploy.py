@@ -144,7 +144,7 @@ def projectmg():
                 ProjectInfo = Project.query.get(project_id)
             except:
                 return (json.dumps({"code": -1, "msg": u"项目发布失败!", "data": u"查询项目信息失败"}))
-            Out_logs(action,u"项目名称:"+ProjectInfo.project_name+";发布版本："+svn_revision)
+            Out_logs(action,u"项目名称:"+str(ProjectInfo.project_name)+u";发布版本:"+str(svn_revision))
             cmd = app.config['SVN_CMD'] + '  up  -r  ' + svn_revision + ' --username ' + app.config[
                 'SVN_USER'] + ' --password ' + app.config[
                       'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
