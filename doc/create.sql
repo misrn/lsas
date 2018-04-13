@@ -76,3 +76,15 @@ CREATE TABLE `deploy_logs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS `operation_logs`;
+CREATE TABLE `operation_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) DEFAULT NULL COMMENT '操作类型',
+  `time` datetime DEFAULT NULL COMMENT '操作时间',
+  `tex` varchar(255) DEFAULT NULL COMMENT '备注',
+  `user` varchar(255) DEFAULT NULL COMMENT '用户',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+

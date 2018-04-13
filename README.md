@@ -13,6 +13,7 @@ python框架：flask
 - Salt管理，在线实现saltstack配置文件的编辑 ; 默认配置文件目录/data/salt ; salt master 配置文件参考：[master](https://github.com/fandaye/lsas/blob/master/doc/master)
 - 发布系统，项目管理 新增/删除
 - 发布系统，代码发布[预发布环境暂未开发] 发布项目
+- 记录操作日志
 
 默认账户/密码：admin/passwd
 
