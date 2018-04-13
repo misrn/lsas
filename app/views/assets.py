@@ -31,6 +31,10 @@ def host_info():
 def hosts_up():
     if request.method == 'POST':
         try:
+            Out_logs("hosts_up",u"更新主机信息")
+        except:
+            pass
+        try:
 
             # 初始化saltstack api
             salt = saltAPI(host=app.config['SALT_API_ADDR'], user=app.config['SALT_API_USER'],

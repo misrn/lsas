@@ -144,7 +144,10 @@ def projectmg():
                 ProjectInfo = Project.query.get(project_id)
             except:
                 return (json.dumps({"code": -1, "msg": u"项目发布失败!", "data": u"查询项目信息失败"}))
-            Out_logs(action,u"项目名称:"+str(ProjectInfo.project_name)+u";发布版本:"+str(svn_revision))
+            try:
+                Out_logs(action,u"项目名称:"+str(ProjectInfo.project_name)+u";发布版本:"+str(svn_revision))
+            except:
+                pass
             cmd = app.config['SVN_CMD'] + '  up  -r  ' + svn_revision + ' --username ' + app.config[
                 'SVN_USER'] + ' --password ' + app.config[
                       'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
@@ -194,6 +197,10 @@ def projectmg():
             project_name = request.form['project_name']  # 项目名称
             Hosts_pro = request.form['Hosts_pro']  # 生产主机列表
             Hosts_pre = request.form['Hosts_pre']  # 预发布主机列表
+            try:
+                Out_logs(action,u"项目名称:"+str(project_name))
+            except:
+                pass
             # svn 代码拉取命令
             cmd = app.config['SVN_CMD'] + '  co --username ' + app.config['SVN_USER'] + ' --password ' + app.config[
                 'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + app.config['SVN_ADDR'] + project_name + '/' + \

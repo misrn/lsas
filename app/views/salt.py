@@ -67,23 +67,43 @@ def filemg():
         
         elif action == "rename":
             newname = request.form["newname"]  # 新名称
-
+            try:
+                Out_logs("salt_file",u"重命名:"+str(path+';为：'+newname))
+            except:
+                pass
             return F.rename(path, newname)
         elif action == "delete":
+            try:
+               Out_logs("salt_file",u"删除文件:"+str(path))
+            except:
+                pass
             return F.delete(path)
 
         elif action == "dadd":
             dname = request.form["dname"]
+            try:
+                Out_logs("salt_file",u"添加目录:"+str(path+'/'+dname))
+            except:
+                pass
             return F.dadd(path, dname)
 
         elif action == "fadd":
             dname = request.form["dname"]
+            dname = request.form["dname"]
+            try:
+                Out_logs("salt_file",u"添加文件:"+str(path+'/'+dname))
+            except:
+                pass
             return F.fadd(path, dname)
 
         elif action == "fopen":
             return F.fopen(path)
 
         elif action == "fsave":
+            try:
+                Out_logs("salt_file",u"修改文件:"+str(path))
+            except:
+                pass
             content = request.form["content"]
             return F.fsave(path, content)
 
@@ -125,10 +145,14 @@ def cmdmg():
             salt_cmd_mode_info = request.form['salt_cmd_mode_info']
             salt_cmd_mode = request.form['salt_cmd_mode']
             salt_cmd_hosts = request.form['hosts']
+            try:
+                Out_logs(action,u"主机："+salt_cmd_hosts+u"执行命令:"+str(salt_cmd_mode)+'--'+salt_cmd_mode_info)
+            except:
+                pass
             salt = saltAPI(host=app.config['SALT_API_ADDR'], user=app.config['SALT_API_USER'],password=app.config['SALT_API_USER'], prot=app.config['SALT_API_PROT'])
             for cmd in app.config['SALT_CMD_EXCLUDE'].split(','):
                 if cmd in salt_cmd_mode_info:
-                    return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": "检查命令规范!"})
+                    return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": u"检查命令规范!"})
             if salt_cmd_mode == "cmd.run":
                 data = ''
                 mode = 'txt'
