@@ -148,21 +148,24 @@ def projectmg():
                 Out_logs(action,u"项目名称:"+str(ProjectInfo.project_name)+u";发布版本:"+str(svn_revision))
             except:
                 pass
-            cmd = app.config['SVN_CMD'] + '  up  -r  ' + svn_revision + ' --username ' + app.config[
-                'SVN_USER'] + ' --password ' + app.config[
-                      'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
+            cmd = app.config['SVN_CMD'] + '  up  -r  ' + svn_revision + ' --username ' + app.config['SVN_USER'] + ' --password ' + app.config['SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
             status, input = commands.getstatusoutput(cmd)  # 执行代码更新
             txt += u'<p style="font-weight:bold;color:red;"> svn 更新日志: </p>  <p> %s </p>' % (input)
             if status == 0:
                 for host in ProjectInfo.pro_hosts.split(','):  # 循环主机
-                    status, input = commands.getstatusoutput("/usr/bin/salt '%s' state.sls deploy.%s" % (
-                    host, ProjectInfo.project_name.replace(".", "-")))  # 执行代码同步
-                    txt += u'<p style="font-weight:bold;color:red;"> 代码同步日志: </p>  <p> %s </p>' % (input)
+                    status, input = commands.getstatusoutput("/usr/bin/salt '%s' state.sls deploy.%s" % (host, ProjectInfo.project_name.replace(".", "-")))  # 执行代码同步
+                    if status ==0:
+                        txt += u'<p style="font-weight:bold;color:green;">主机 %s 代码同步完成 </p>' % (host)
+                    else:
+                        txt += u'<p style="font-weight:bold;color:red;">主机 %s 代码同步失败 </p>' % (host)
+                        print input
                     if status == 0 and request.form['restart'] == "y":
-                        status, input = commands.getstatusoutput(
-                            "/usr/bin/salt '%s' cmd.run '/usr/sbin/service %s restart'" % (
-                            host, ProjectInfo.project_name))  # 重启程序
-                        txt += u'<p style="font-weight:bold;color:red;"> 程序重启日志: </p>  <p> %s </p>' % (input)
+                        status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '/usr/sbin/service %s restart'" % (host, ProjectInfo.project_name))  # 重启程序
+                        if status ==0:
+                            txt += u'<p style="font-weight:bold;color:green;">主机 %s 重启程序完成 </p>' % (host)
+                        else:
+                            txt += u'<p style="font-weight:bold;color:red;">主机 %s 重启程序失败 </p>' % (host)
+                            txt += u'<p style="font-weight:bold;color:red;"> 错误日志: </p>  <p> %s </p>' % (input)
                 data = mysqld.Deploy_logs(
                     deploy_version=svn_revision,
                     deploy_user=g.user.username,
