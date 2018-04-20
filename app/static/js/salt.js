@@ -391,16 +391,27 @@ function salt_cmd_info() {
             for (i = 0; i < js.data.length; i++) {
                 host_html += '<label style="width: 20%"><input type="checkbox" value="' + js.data[i].hostname + '" name="sal_cmd_hosts" style="vertical-align:middle;"> ' + js.data[i].hostname + '</label>';
             }
-            var cmd_html = '<select class="form-control" name="salt_cmd_mode_info" id="salt_cmd_mode_select_info">' +
-                               ' <option value="" disabled selected style="color: #b6b6b6" >请选择</option>'
+            var cmd_html = '<select class="form-control" name="salt_cmd_mode_info" id="salt_cmd_mode_select_info">' + ' <option value="" disabled selected style="color: #b6b6b6" >请选择</option>';
             
             for (i = 0; i < js.sdata.length; i++) {
-                cmd_html += '<option value="'+ js.sdata[i]+'">'+ js.sdata[i] +'</option>' 
+                cmd_html += '<option value="'+ js.sdata[i]+'">'+ js.sdata[i] +'</option>'; 
             }
-            cmd_html += '</select>'
+            cmd_html += '</select>';
             $("#salt_cmd_mode_select").html(cmd_html);
             $("#salt_cmd_host").html(host_html);
         }
     });
 }
 
+function salt_host_on(){
+   var ch=document.getElementsByName("sal_cmd_hosts");
+   if(document.getElementById("hxy_host").checked){
+      for (var i=0;i<ch.length;i++){
+          ch[i].checked=true;
+      }
+   } else {
+      for (var i=0;i<ch.length;i++){
+          ch[i].checked=false;
+      }
+   }
+}
