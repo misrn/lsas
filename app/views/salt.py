@@ -48,30 +48,25 @@ def filemg():
         action = request.form['action']
         path = request.form['path']
         path_spl = path.split('/')
-        if len(path_spl) <= 2:
+        if len(path_spl) <= 2 or path_spl[1] != 'data' or path_spl[2] != 'salt':
             data = {
                 "code": -1,
-                "msg": "超出访问权限!",
-                "data": ""
-            }
-            return json.dumps(data) 
-        if path_spl[1] != 'data' or path_spl[2] != 'salt':
-            data = {
-                "code": -1,
-                "msg": "超出访问权限!",
+                "msg": u"超出访问权限!",
                 "data": ""
             }
             return json.dumps(data)
+
         if action == "listdir":
             return F.listdir(path, True)
         
         elif action == "rename":
-            newname = request.form["newname"]  # 新名称
+            newname = request.form["newname"].replace(" ", "")  # 新名称
             try:
                 Out_logs("salt_file",u"重命名:"+str(path+';为：'+newname))
             except:
                 pass
             return F.rename(path, newname)
+
         elif action == "delete":
             try:
                Out_logs("salt_file",u"删除文件:"+str(path))
@@ -80,7 +75,7 @@ def filemg():
             return F.delete(path)
 
         elif action == "dadd":
-            dname = request.form["dname"]
+            dname = request.form["dname"].replace(" ", "") # 目录名称
             try:
                 Out_logs("salt_file",u"添加目录:"+str(path+'/'+dname))
             except:
@@ -88,8 +83,7 @@ def filemg():
             return F.dadd(path, dname)
 
         elif action == "fadd":
-            dname = request.form["dname"]
-            dname = request.form["dname"]
+            dname = request.form["dname"].replace(" ", "") # 文件名称
             try:
                 Out_logs("salt_file",u"添加文件:"+str(path+'/'+dname))
             except:
@@ -104,8 +98,7 @@ def filemg():
                 Out_logs("salt_file",u"修改文件:"+str(path))
             except:
                 pass
-            content = request.form["content"]
-            return F.fsave(path, content)
+            return F.fsave(path, request.form["content"])
 
 
 
