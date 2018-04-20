@@ -326,55 +326,62 @@ function salt_cmd_post(){
             if (sal_cmd_hosts[k].checked)
                 Hosts.push(sal_cmd_hosts[k].value);
         }
-        if (Hosts == ""){
-           layer.msg("请选择主机!")
-        }
-        var salt_cmd_mode = document.getElementById("salt_cmd_mode").value;
-        if (salt_cmd_mode == ""){
-           layer.msg("请选择模块!")
-        }
+
         if(document.getElementById("salt_cmd_mode_type").checked){
            var salt_cmd_mode_info = document.getElementById("salt_cmd_mode_text_info").value;
         }else {
            var salt_cmd_mode_info = document.getElementById("salt_cmd_mode_select_info").value;
         }
-        if (salt_cmd_mode_info == ""){
+
+        var salt_cmd_mode = document.getElementById("salt_cmd_mode").value;
+
+        if (Hosts.length == 0){
+           layer.msg("请选择主机!")
+        }
+
+        else if (salt_cmd_mode == ""){
+           layer.msg("请选择模块!")
+        }
+
+
+        else if (salt_cmd_mode_info == ""){
            layer.msg("请输入/选择命令!")
-        }
-        layer.msg("数据加载中，请稍后....", {time: 0});
-        $.ajax({
-            type: 'post',
-            url: '/salt/cmdmg',
-            data: {
-                "action": 'cmd_execute',
-                "hosts": Hosts.toString(),
-                "salt_cmd_mode": salt_cmd_mode,
-                "salt_cmd_mode_info": salt_cmd_mode_info
-            },
-            dataType: 'json',
-            success: function (res) {
-            layer.msg("数据加载完成!");
-            if (res.code == 1) {
-               if (res.mode == "json"){
-            layer.open({
-                type: 1,
-                area: ['820px', '840px'], //宽高
-                content: '<pre>' + syntaxHighlight(res.data) + '</pre>'
-            });
-              }else {
-            layer.open({
-                type: 1,
-                area: ['820px', '840px'], //宽高
-                content: '<pre>' + res.data + '</pre>'
-            });
+        } else {
+              layer.msg("数据加载中，请稍后....", {time: 0});
+              $.ajax({
+                     type: 'post',
+                     url: '/salt/cmdmg',
+                     data: {
+                         "action": 'cmd_execute',
+                         "hosts": Hosts.toString(),
+                         "salt_cmd_mode": salt_cmd_mode,
+                         "salt_cmd_mode_info": salt_cmd_mode_info
+                     },
+                     dataType: 'json',
+                     success: function (res) {
+                     layer.msg("数据加载完成!");
+                     if (res.code == 1) {
+                         if (res.mode == "json"){
+                             layer.open({
+                                 type: 1,
+                                 area: ['820px', '840px'], //宽高
+                                 content: '<pre>' + syntaxHighlight(res.data) + '</pre>'
+                         });
+                     }else {
+                           layer.open({
+                               type: 1,
+                               area: ['820px', '840px'], //宽高
+                               content: '<pre>' + res.data + '</pre>'
+                           });
 
-            }
-        }else{
-          layer.msg(res.data)
-         }
+                    }
+                    } else {
+                         layer.msg(res.data)
+                    }
 
+                    }
+              });
         }
-        });       
 }
 
 
