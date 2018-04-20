@@ -57,7 +57,7 @@ def filemg():
             return json.dumps(data)
 
         if action == "listdir":
-            return F.listdir(path, False)
+            return F.listdir(path)
         
         elif action == "rename":
             newname = request.form["newname"].replace(" ", "")  # 新名称
