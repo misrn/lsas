@@ -244,13 +244,49 @@ function show_project_data(project_id) {
                 $('#pushdeploylogs').show();
                 $('#pushdeploylist').hide();
                 $('#show_deploy_info').html("  显示最近" + obj.qnum + "次");
-                $('#push_project_name').html("<a> 项目名称：" + obj.project_name + "</a> <a> ;当前版本号：" + obj.pro_version + "</a>");
+                $('#push_project_name').html('<a class=\"btn btn-default btn-xs\" > 项目名称："' + obj.project_name + '"</a> <a class=\"btn btn-default btn-xs\"> 当前版本号："' + obj.pro_version + '"</a>"+"<a class=\"btn btn-default btn-xs\" href=\'#\'  style=\'float:right\' onclick=show_log_set_host("'+ obj.project_id +'")><i class=\"fa fa-fw fa-comment-o\"></i>日志查看</a>');
                 $('#show_svn_num').html("  显示最近" + obj.snum + "次");
                 $("#pushProjectinfo").html(dtrStr);
                 $('#pushsinfo').html(strStr);
             }
         }
     });
+}
+
+
+function show_log_set_host(project_id) {
+    $.ajax({
+        type: 'post',
+        url: '/deploy/projectmg',
+        data: {
+            "project_id": project_id,
+            "action": 'gethosts'
+        },
+        dataType: 'json',
+        success: function (js) {
+            var obj = js;
+            if (obj.code == 1) {
+                hostsp = obj.data.split(",");
+                var str = '';
+                for(var i = 0 ; i < hostsp.length; i++){
+                    str += '<a class="btn btn-default btn-xs" style="width: 25%; margin-left:20px;" onclick=show_real_time_log("' + obj.project_name + '","' + hostsp[i] + '")><i class="fa fa-desktop"></i>'+hostsp[i]+'</a>'
+                }
+                layer.open({
+                    title:"选择主机",
+                    type: 1,
+                    area: ['820px', '200px'], //宽高
+                    content: '<div class="box-body" style="line-height:30px">' + str + '</div>'
+                });
+            } else {
+                layer.msg(obj.msg)
+            }
+        }
+    });
+}
+
+function show_real_time_log(project_name,host) {
+    window.open("/logs/app?project_name="+project_name+"&host="+host);
+
 }
 
 
