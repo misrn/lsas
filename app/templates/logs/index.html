@@ -1,8 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>日志查看</title>
+</head>
 <style type="text/css">
     html,body{background:#000; color:#090;}
 </style>
 
 <div style="margin-top:10px;">
-    <p id='log'></p>
+    <p style="float:right">
+         <button type="button" style="margin-left:20px;" id="start">开始</button> 
+         <button type="button" style="margin-left:20px;" id="stop">停止</button>  
+         <button type="button" style="margin-left:20px;" id="rese">清屏</button>
+    </p>
+    <xmp id='log'></xmp>
 </div>
 <script src="{{ url_for('static', filename='plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
+
+<script>
+$(function(){
+    var postData = (function (param) {
+        var timer = null;
+        function ajax() {
+            $.ajax({
+                type: 'post',
+                url: '/logs/appms',
+                data: {
+                    "line": "{{g.Line}}",
+                    "project_name": "{{g.project_name}}",
+                    "host": "{{g.host}}"
+                },
+                dataType: 'json',
+                success: function (js) {
+                    var obj = js;
+                    if (obj.code == 1) {
+                        $('#log').html(obj.data);
+                    } else {
+                        layer.msg(obj.msg)
+                    }
+                }
+            });
+        }
+        return {
+            run: function () {
+                if (timer) {
+                    return false
+                }
+                timer = setInterval(ajax, 1500)
+            },
+            stop: function () {
+                console.log('stop')
+                clearInterval(timer)
+                timer = null
+            },
+        }
+    })();
+                
+　　// start 的点击事件
+　　$("#start").click(function(){
+    postData.run()
+　　});
+
+　　$("#stop").click(function(){
+    postData.stop()
+　　});
+
+    $("#rese").click(function(){
+        location.reload();
+　　});
+
+
+})
+
+</script>
+

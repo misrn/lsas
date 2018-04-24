@@ -42,6 +42,7 @@ def projectmg():
         elif action == "gethosts":
             try:
                 id = request.form['project_id']
+                print id
                 ProjectInfo = Project.query.get(id)
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ProjectInfo.pro_hosts,"project_name":ProjectInfo.project_name},cls=MyEncoder)
             except:

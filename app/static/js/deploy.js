@@ -17,7 +17,8 @@ function deployplist() {
                     trStr += '<td><p style="font-weight:bold">' + obj.data[i].project_name + '/' + obj.data[i].type + '</p></td> ';
                     trStr += '<td> ' + obj.data[i].add_time + '</td>';
                     trStr += '<td> ' + obj.data[i].up_time + '</td>';
-                    trStr += '<td> <a class="btn btn-default btn-xs" onclick=deploypdel("' + obj.data[i].project_name + '")><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
+                    trStr += '<td> <a class="btn btn-default btn-xs" href=\'#\' onclick=show_log_set_host("'+ obj.data[i].id +'")><i class="fa fa-fw fa-comment-o"></i>生产日志</a> '+
+                        '<a class="btn btn-default btn-xs" onclick=deploypdel("' + obj.data[i].project_name + '")><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
                         '<a class="btn btn-default btn-xs" ><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
                         '<a class="btn btn-default btn-xs" onclick=show_project_info("' + obj.data[i].id + '")><i class="fa fa-fw fa-edit"></i>详情</a> ' +
                         '</td>';
@@ -244,7 +245,7 @@ function show_project_data(project_id) {
                 $('#pushdeploylogs').show();
                 $('#pushdeploylist').hide();
                 $('#show_deploy_info').html("  显示最近" + obj.qnum + "次");
-                $('#push_project_name').html('<a class=\"btn btn-default btn-xs\" > 项目名称："' + obj.project_name + '"</a> <a class=\"btn btn-default btn-xs\"> 当前版本号："' + obj.pro_version + '"</a>"+"<a class=\"btn btn-default btn-xs\" href=\'#\'  style=\'float:right\' onclick=show_log_set_host("'+ obj.project_id +'")><i class=\"fa fa-fw fa-comment-o\"></i>日志查看</a>');
+                $('#push_project_name').html('<a class=\"btn btn-default btn-xs\" > 项目名称："' + obj.project_name + '"</a> <a class=\"btn btn-default btn-xs\"> 当前版本号："' + obj.pro_version + '"</a><a class=\"btn btn-default btn-xs\" href=\'#\'  style=\'float:right\' onclick=show_log_set_host("'+ obj.project_id +'")><i class=\"fa fa-fw fa-comment-o\"></i>日志查看</a>');
                 $('#show_svn_num').html("  显示最近" + obj.snum + "次");
                 $("#pushProjectinfo").html(dtrStr);
                 $('#pushsinfo').html(strStr);
