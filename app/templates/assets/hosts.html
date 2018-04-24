@@ -419,10 +419,8 @@
                 <div class="col-xs-12">
                     <div class="box">
                         <div class="box-header">
-                            <a class="btn btn-primary btn-xs" onclick="assets_update_hosts()">更新
-                            </a>
-                            <a class="btn btn-warning btn-xs" onclick="Overloaded_page()">刷新
-                            </a>
+                            <a class="btn btn-default btn-xs" onclick="assets_update_hosts()"><i class="fa fa-rotate-right"></i>更新主机</a>
+                            <a class="btn btn-default btn-xs" onclick="Overloaded_page()"><i class="fa fa-refresh"></i> 刷新</a>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -463,7 +461,7 @@
                                         </td>
                                         <td>{{ host.add_time }}</td>
                                         <td>{{ host.up_time }}</td>
-                                        <td onclick='hostsinfo("{{ host.hostname }}")'><a href="#"> <span class="label label-info" >详细</span></a></td>
+                                        <td onclick='hostsinfo("{{ host.hostname }}")'><a href="#"> <span class="label label-info" ><i class="fa fa-fw fa-bars"></i>详细</span></a></td>
                                     </tr>
                                 {% endfor %}
 

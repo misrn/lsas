@@ -20,7 +20,7 @@ function deployplist() {
                     trStr += '<td> <a class="btn btn-default btn-xs" href=\'#\' onclick=show_log_set_host("'+ obj.data[i].id +'")><i class="fa fa-fw fa-comment-o"></i>生产日志</a> '+
                         '<a class="btn btn-default btn-xs" onclick=deploypdel("' + obj.data[i].project_name + '")><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
                         '<a class="btn btn-default btn-xs" ><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
-                        '<a class="btn btn-default btn-xs" onclick=show_project_info("' + obj.data[i].id + '")><i class="fa fa-fw fa-edit"></i>详情</a> ' +
+                        '<a class="btn btn-default btn-xs" onclick=show_project_info("' + obj.data[i].id + '")><i class="fa fa-fw fa-bars"></i>详情</a> ' +
                         '</td>';
                     trStr += '</tr> ';
                 }
