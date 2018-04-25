@@ -54,7 +54,6 @@ function diff(arr,arr1){
     }
     return arr.concat(arr1);
 }
-
 function deploy_poject_edit_layer(project_id){
 
     var hostsliste = [];var hostslisto = [];
@@ -66,6 +65,7 @@ function deploy_poject_edit_layer(project_id){
         },
         dataType: 'json',
         success: function (ho) {
+        if (ho.code == 1){
             for (i = 0; i < ho.data.length; i++){
                 hostsliste[i]=ho.data[i].hostname;
                 hostslisto[i]=ho.data[i].hostname
@@ -79,28 +79,39 @@ function deploy_poject_edit_layer(project_id){
                 },
                 dataType: 'json',
                 success: function (js) {
-
-
-                    var proih= js.sdata.pro_hosts.split(",");
-                    var preih= js.sdata.pre_hosts.split(",");
-
-                    var prooh=diff(hostslisto,js.sdata.pro_hosts.split(","));
-                    var preoh=diff(hostsliste,js.sdata.pre_hosts.split(","));
-
+                    if (js.code == 1){
                     var Str_pro = '';
                     var Str_pre = '';
+                    if (js.sdata.pre_hosts == ""){
+                         for (i =0 ; i < hostsliste.length; i++){
+                              Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + hostsliste[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;"> ' + hostsliste[i] + '</label>';
+                         }
+                    }else {
+                        var preih= js.sdata.pre_hosts.split(",");
+                        var preoh=diff(hostsliste,js.sdata.pre_hosts.split(","));
+                        for (i =0 ; i < preih.length; i++){
+                            Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + preih[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;" checked="checked"> ' + preih[i] + '</label>';
+                        }
+                        for (i =0 ; i < preoh.length; i++) {
+                            Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + preoh[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;"> ' + preoh[i] + '</label>';
+                        }
+                    }
+                    if (js.sdata.pro_hosts == ""){
+                         for (i =0 ; i < hostslisto.length; i++){
+                              Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + hostslisto[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;"> '+ hostslisto[i] + '</label>';
+                         }
+                    }else {
 
-                    for (i =0 ; i < proih.length; i++){
-                        Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + proih[i] + '" name="Hosts_pro_edit" style="vertical-align:middle;" checked="checked"> ' + proih[i] + '</label>';
-                    }
-                    for (i =0 ; i < preih.length; i++){
-                        Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + preih[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;" checked="checked"> ' + preih[i] + '</label>';
-                    }
-                    for (i =0 ; i < prooh.length; i++) {
-                        Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + prooh[i] + '" name="Hosts_pro_edit" style="vertical-align:middle;"> ' + prooh[i] + '</label>';
-                    }
-                    for (i =0 ; i < preoh.length; i++) {
-                        Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + preoh[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;"> ' + preoh[i] + '</label>';
+                        var proih= js.sdata.pro_hosts.split(",");
+                        var prooh=diff(hostslisto,js.sdata.pro_hosts.split(","));                   
+
+                     
+                        for (i =0 ; i < proih.length; i++){
+                            Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + proih[i] + '" name="Hosts_pro_edit" style="vertical-align:middle;" checked="checked"> ' + proih[i] + '</label>';
+                        }
+                        for (i =0 ; i < prooh.length; i++) {
+                            Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + prooh[i] + '" name="Hosts_pro_edit" style="vertical-align:middle;"> ' + prooh[i] + '</label>';
+                        }
                     }
 
                     $("#projecthosts_pre_edit").html(Str_pre);
@@ -116,8 +127,14 @@ function deploy_poject_edit_layer(project_id){
                         shadeClose: true,
                         content: $('#deployedit')
                     });
+                    }else{
+                        layer.msg(js.msg)
+                    }
                 }
             });
+            }else{
+                 layer.msg(js.msg)
+            }
         }
     });
 }
