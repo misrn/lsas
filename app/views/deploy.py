@@ -51,8 +51,7 @@ def projectmg():
 
         elif action == "pinfo":
 
-            id = request.form['project_id']
-            ProjectInfo = Project.query.get(id)
+            ProjectInfo = Project.query.get(request.form['project_id'])
             data = {
                 "项目ID": ProjectInfo.id,
                 "项目名称": ProjectInfo.project_name,
@@ -68,9 +67,30 @@ def projectmg():
                 "生产主机列表": ProjectInfo.pro_hosts
             }
 
-            return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data},cls=MyEncoder)
+            sdata = {
+                "id":ProjectInfo.id,
+                "project_name":ProjectInfo.project_name,
+                "pre_hosts":ProjectInfo.pre_hosts,
+                "pro_hosts":ProjectInfo.pro_hosts,
+                "type":ProjectInfo.type
+            }
 
+            g.edit_id = ProjectInfo.id
+            return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data,"sdata":sdata},cls=MyEncoder)
 
+        elif action == "editproject": #编辑项目
+            try:
+                project_name = request.form['project_name']
+                Hosts_pro = request.form['Hosts_pro']  # 生产主机列表
+                Hosts_pre = request.form['Hosts_pre']  # 预发布主机列表
+                Projecti = Project.query.filter_by(project_name=project_name).first()
+                Projecti.pre_hosts=Hosts_pre
+                Projecti.pro_hosts=Hosts_pro
+                Projecti.up_time=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                db.session.commit()
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ""},cls=MyEncoder)
+            except:
+                return json.dumps({"code": 1, "msg": u"编辑失败!", "data": ""},cls=MyEncoder)
 
         elif action == "listhosts":  # 请求所有主机
             try:
@@ -80,6 +100,7 @@ def projectmg():
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var})
             except:
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+
         elif action == "delete":
             project_name = request.form['project_name']
             dstatus, inputd = commands.getstatusoutput(
@@ -210,6 +231,9 @@ def projectmg():
             project_name = request.form['project_name']  # 项目名称
             Hosts_pro = request.form['Hosts_pro']  # 生产主机列表
             Hosts_pre = request.form['Hosts_pre']  # 预发布主机列表
+            Projecti = Project.query.filter_by(project_name=project_name).first()
+            if Projecti is not None:
+                return (json.dumps({"code": -1, "msg": u"该项目已经存在!", "data": ""}))
             try:
                 Out_logs(action,u"项目名称:"+str(project_name))
             except:

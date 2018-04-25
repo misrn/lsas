@@ -19,7 +19,7 @@ function deployplist() {
                     trStr += '<td> ' + obj.data[i].up_time + '</td>';
                     trStr += '<td> <a class="btn btn-default btn-xs" href=\'#\' onclick=show_log_set_host("'+ obj.data[i].id +'")><i class="fa fa-fw fa-comment-o"></i>生产日志</a> '+
                         '<a class="btn btn-default btn-xs" onclick=deploypdel("' + obj.data[i].project_name + '")><i class="fa fa-fw fa-bitbucket-square"></i>删除</a> ' +
-                        '<a class="btn btn-default btn-xs" ><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
+                        '<a class="btn btn-default btn-xs" onclick=deploy_poject_edit_layer("'+ obj.data[i].id +'")><i class="fa fa-fw fa-edit"></i>编辑</a> ' +
                         '<a class="btn btn-default btn-xs" onclick=show_project_info("' + obj.data[i].id + '")><i class="fa fa-fw fa-bars"></i>详情</a> ' +
                         '</td>';
                     trStr += '</tr> ';
@@ -29,6 +29,136 @@ function deployplist() {
         }
     });
 }
+
+function diff(arr,arr1){
+    var a=[];var b=[];var r;
+    for(var i=0;i<arr.length;i++){
+        var index=arr1.indexOf(arr[i]);
+        if(index!=-1){
+            var r=a[i];
+            for(var j=index;j<arr1.length;j++){
+                if(arr1[j]==arr[i]){
+                    arr1.splice(j,1);
+                    j=j-1;
+                }
+            }
+            for(var k=i+1;k<arr.length;k++){
+                if(arr[k]==arr[i]){
+                    arr.splice(k,1);
+                    k=k-1;
+                }
+            }
+            arr.splice(i,1);
+            i=i-1;
+        }
+    }
+    return arr.concat(arr1);
+}
+
+function deploy_poject_edit_layer(project_id){
+
+    var hostsliste = [];var hostslisto = [];
+    $.ajax({
+        type: 'post',
+        url: '/deploy/projectmg',
+        data: {
+            "action": 'listhosts'
+        },
+        dataType: 'json',
+        success: function (ho) {
+            for (i = 0; i < ho.data.length; i++){
+                hostsliste[i]=ho.data[i].hostname;
+                hostslisto[i]=ho.data[i].hostname
+            }
+            $.ajax({
+                type: 'post',
+                url: '/deploy/projectmg',
+                data: {
+                    "action": 'pinfo',
+                    "project_id":project_id
+                },
+                dataType: 'json',
+                success: function (js) {
+
+
+                    var proih= js.sdata.pro_hosts.split(",");
+                    var preih= js.sdata.pre_hosts.split(",");
+
+                    var prooh=diff(hostslisto,js.sdata.pro_hosts.split(","));
+                    var preoh=diff(hostsliste,js.sdata.pre_hosts.split(","));
+
+                    var Str_pro = '';
+                    var Str_pre = '';
+
+                    for (i =0 ; i < proih.length; i++){
+                        Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + proih[i] + '" name="Hosts_pro_edit" style="vertical-align:middle;" checked="checked"> ' + proih[i] + '</label>';
+                    }
+                    for (i =0 ; i < preih.length; i++){
+                        Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + preih[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;" checked="checked"> ' + preih[i] + '</label>';
+                    }
+                    for (i =0 ; i < prooh.length; i++) {
+                        Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + prooh[i] + '" name="Hosts_pro_edit" style="vertical-align:middle;"> ' + prooh[i] + '</label>';
+                    }
+                    for (i =0 ; i < preoh.length; i++) {
+                        Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + preoh[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;"> ' + preoh[i] + '</label>';
+                    }
+
+                    $("#projecthosts_pre_edit").html(Str_pre);
+                    $("#projecthosts_pro_edit").html(Str_pro);
+                    $("#edit_name").html("正在编辑的项目的名称：<input type=\"text\" name=\"edit_names\" id=\"edit_names\" disabled value='"+ js.sdata.project_name +"'>");
+
+                    layer.open({
+                        type: 1,
+                        title: "编辑项目",
+                        closeBtn: 0,
+                        area: ['1400px', '300px'],
+                        skin: 'white', //没有背景色
+                        shadeClose: true,
+                        content: $('#deployedit')
+                    });
+                }
+            });
+        }
+    });
+}
+
+function deploy_poject_edit_post(){
+    $project_name = document.getElementById("edit_names").value;
+    obj_pro = document.getElementsByName("Hosts_pro_edit");
+    Hosts_pro = [];
+    for (k in obj_pro) {
+        if (obj_pro[k].checked)
+            Hosts_pro.push(obj_pro[k].value);
+    }
+    obj_pre = document.getElementsByName("Hosts_pre_edit");
+    Hosts_pre = [];
+    for (k in obj_pre) {
+        if (obj_pre[k].checked)
+            Hosts_pre.push(obj_pre[k].value);
+    }
+    $.ajax({
+        type: 'post',
+        url: '/deploy/projectmg',
+        data: {
+            "action": 'editproject',
+            "project_name": $project_name,
+            "Hosts_pro": Hosts_pro.toString(),
+            "Hosts_pre": Hosts_pre.toString()
+        },
+        dataType: 'json',
+        success: function (js) {
+            var obj = js;
+            if (obj.code == 1) {
+                layer.close(layer.index);
+                deployplist();
+                layer.msg("编辑成功!");
+            }else {
+                layer.msg(js.msg)
+            }
+        }
+    });
+}
+
 
 
 //查看项目详细信息
@@ -115,12 +245,13 @@ function deploy_poject_add_layer() {
         type: 1,
         title: "添加部署项目",
         closeBtn: 0,
-        area: ['80%', '50%'],
-        skin: 'layui-layer-nobg', //没有背景色
+        area: ['80%', '400px'],
+        skin: 'white', //没有背景色
         shadeClose: true,
         content: $('#deploypadd')
     });
 }
+
 
 
 function deploy_poject_add_post() {
@@ -160,6 +291,8 @@ function deploy_poject_add_post() {
                 if (obj.code == 1) {
                     deployplist();
                     layer.close(layer.index);
+                }else {
+                    layer.msg(js.msg)
                 }
             }
         });

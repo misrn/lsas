@@ -448,14 +448,14 @@
             <!-- /.row -->
         </section>
 
-            <div id="deploypadd" class="box box-info" style="display: none">
-                <div class="box-body">
+            <div id="deploypadd" class="box-footer" style="display: none">
+                <div>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
                         <input type="text" class="form-control" placeholder="项目名称" name="project_name" id="project_name">
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div>
                         <select class="form-control" name="project_type" id="project_type">
                             <option value="" disabled selected style="color: #b6b6b6" >选择项目类型</option>
                             <option value="php">php</option>
@@ -463,23 +463,45 @@
                             <option value="tomcat">tomcat</option>
                         </select>
                     </div>
+                    <p>.</p>
                     <div class="form-group">
-                        <h4>生产主机选择</h4>
+                        生产主机选择
                         <div class="checkbox" id="projecthosts_pro">
                         </div>
                     </div>
                     <div class="form-group">
-                        <h4>预发布主机选择</h4>
+                        预发布主机选择
                         <div class="checkbox" id="projecthosts_pre">
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    <a href="#" class="btn btn-warning btn-xs" style="float:right"
-                       onclick="deploy_poject_add_post()">添加</a>
+                <div >
+                    <a href="#" class="btn btn-default btn-xs" style="float:right"
+                       onclick="deploy_poject_add_post()"><i class="fa fa-fw fa-save"></i>添加</a>
                 </div>
             </div>
 
+        <div id="deployedit" class="box-footer" style="display: none">
+            <div>
+                <p style="color: red">项目名称/类型目前不支持编辑；如需变更请删除项目再添加项目</p>
+                <p id="edit_name"></p>
+
+                <div class="form-group">
+                    生产主机选择
+                    <div class="checkbox" id="projecthosts_pro_edit">
+                    </div>
+                </div>
+                <div class="form-group">
+                    预发布主机选择
+                    <div class="checkbox" id="projecthosts_pre_edit">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <a href="#" class="btn btn-default btn-xs" style="float:right"
+                   onclick="deploy_poject_edit_post({{ g.edit_id }})"><i class="fa fa-fw fa-save"></i>保存</a>
+            </div>
+        </div>
         <!-- /.content -->
     </div>
     <script src="{{ url_for('static', filename='js/deploy.js') }}"></script>
