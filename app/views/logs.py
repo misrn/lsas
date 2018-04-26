@@ -20,7 +20,7 @@ def apps():
     info = salt.saltCmd({"fun": "cmd.run", "client": "local", "tgt": host , "arg":cmd})[0][host]
 
     key = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-    r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'])
+    r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
     if "不存在!" in info:
         r.set(key, 0)
     else:
@@ -39,7 +39,7 @@ def appms():
         key = request.form['key']
         project_name = request.form['project_name']
         host = request.form['host'] 
-        r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'])
+        r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
         line = r.get(key)
         cmd= "/data/bin/out_file.sh %s %s"%(project_name,str(int(line)+1))
         status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '%s'" % (host, cmd))
