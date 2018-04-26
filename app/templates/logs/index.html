@@ -28,7 +28,7 @@ $(function(){
                 type: 'post',
                 url: '/logs/appms',
                 data: {
-                    "line": "{{g.Line}}",
+                    "key": "{{g.key}}",
                     "project_name": "{{g.project_name}}",
                     "host": "{{g.host}}"
                 },
@@ -36,7 +36,7 @@ $(function(){
                 success: function (js) {
                     var obj = js;
                     if (obj.code == 1) {
-                        $('#log').html(obj.data);
+                        $('#log').append(obj.data);
                     } else {
                         layer.msg(obj.msg)
                     }
