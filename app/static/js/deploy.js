@@ -82,6 +82,7 @@ function deploy_poject_edit_layer(project_id){
                     if (js.code == 1){
                     var Str_pro = '';
                     var Str_pre = '';
+                    //预生产
                     if (js.sdata.pre_hosts == ""){
                          for (i =0 ; i < hostsliste.length; i++){
                               Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + hostsliste[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;"> ' + hostsliste[i] + '</label>';
@@ -96,16 +97,15 @@ function deploy_poject_edit_layer(project_id){
                             Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + preoh[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;"> ' + preoh[i] + '</label>';
                         }
                     }
+                    //生产
                     if (js.sdata.pro_hosts == ""){
                          for (i =0 ; i < hostslisto.length; i++){
-                              Str_pre += '<label style="width: 20%"><input type="checkbox" value="' + hostslisto[i] + '" name="Hosts_pre_edit" style="vertical-align:middle;"> '+ hostslisto[i] + '</label>';
+                              Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + hostslisto[i] + '" name="Hosts_pro_edit" style="vertical-align:middle;"> '+ hostslisto[i] + '</label>';
                          }
                     }else {
 
                         var proih= js.sdata.pro_hosts.split(",");
-                        var prooh=diff(hostslisto,js.sdata.pro_hosts.split(","));                   
-
-                     
+                        var prooh=diff(hostslisto,js.sdata.pro_hosts.split(","));     
                         for (i =0 ; i < proih.length; i++){
                             Str_pro += '<label style="width: 20%"><input type="checkbox" value="' + proih[i] + '" name="Hosts_pro_edit" style="vertical-align:middle;" checked="checked"> ' + proih[i] + '</label>';
                         }
