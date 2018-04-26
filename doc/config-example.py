@@ -30,4 +30,10 @@ SHOW_SVN_LOGS_NUM = 10
 PHP_MODE = 'apache'
 PHP_ROOT = '/www'
 
+REDIS_ADDR = "127.0.0.1"
+REDIS_PROT = 6379
+REDIS_DB = 8
+REDIS_PASSWD = ""
+
+
 SALT_CMD_EXCLUDE = 'rm,mkfs,dd,halt,reboot,shutdown,poweroff,init'
