@@ -199,7 +199,7 @@ def projectmg():
                             txt += u'<p style="font-weight:bold;color:red;"> 错误日志: </p>  <p> %s </p>' % (input)
                 data = mysqld.Deploy_logs(
                     deploy_version=svn_revision,
-                    deploy_user=g.user.username,
+                    deploy_user=g.user.full_name,
                     deploy_project_id=project_id,
                     deploy_txt=txt
                 )
@@ -211,7 +211,7 @@ def projectmg():
             else:
                 data = mysqld.Deploy_logs(
                     deploy_version=svn_revision,
-                    deploy_user=g.user.username,
+                    deploy_user=g.user.full_name,
                     deploy_project_id=project_id,
                     deploy_txt=txt
                 )
