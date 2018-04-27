@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from app.views.common import *
-import pinyin
 
 # 定义蓝图
 sys = Blueprint('sys', __name__)
