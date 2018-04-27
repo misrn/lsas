@@ -9,6 +9,18 @@ import time
 # nullable 如果为True 允许使用空值
 # default 设置默认值
 
+# 角色表
+class Roles(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer(), primary_key=True, nullable=False)
+    role_name = db.Column(db.String(255), unique=False, nullable=False)  # 角色名称
+    create_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 创建时间
+    role_text = db.Column(db.String(255), unique=False, nullable=False)  # 角色标签
+
+    def __init__(self, role_name, role_text):
+        self.role_name = role_name
+        self.create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        self.role_text = role_text
 
 
 # 操作日志表
@@ -105,19 +117,23 @@ class Hosts(db.Model):
 class Users(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer(), primary_key=True, nullable=False)
-    username = db.Column(db.String(255), unique=True, nullable=False)  # 用户名
+
     passwd = db.Column(db.String(255), unique=False, nullable=False)  # 密码
     active = db.Column(db.Integer(), nullable=False, default=0)  # 账户状态
     add_time = db.Column(db.DateTime(), nullable=False)  # 注册时间
     login_time = db.Column(db.DateTime(), nullable=True)  # 最近一次登录时间
     full_name = db.Column(db.String(255), nullable=False)  # 姓名
+    role_id = db.Column(db.Integer(), nullable=True) # 角色ID
+    email = db.Column(db.String(255), nullable=False)  # 邮箱
 
-    def __init__(self, username, passwd, full_name):
-        self.username = username
+
+    def __init__(self, passwd, full_name,role_id,email):
+        self.email=email
         self.passwd = passwd
         self.active = 0
         self.add_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         self.full_name = full_name
+        self.role_id = role_id
 
     def is_active(self):
         if int(self.active) == 1:

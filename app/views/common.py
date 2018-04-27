@@ -2,16 +2,20 @@
 from flask import Blueprint, render_template, flash, session, g, request, redirect, url_for ,jsonify
 from flask_login import login_required ,current_user ,logout_user,login_user
 from app.modules import  mysqld
+from app.modules import  femail
 from app.modules import salt
 from app.modules.salt import *
 from app.modules.file import *
 from app.modules.mysqld import *
+from app.modules.femail import *
 from app import login_manager, app
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import pysvn
 from datetime import date, datetime
+import string
+import random
 
 #用户加载回调
 @login_manager.user_loader

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>LSAS | 命令执行</title>
+    <title>LSAS | 角色管理</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.png') }}">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -17,11 +17,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/AdminLTE.min.css') }}">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins
-         folder instead of downloading all of them to reduce the load. -->
+    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/skins/_all-skins.min.css') }}">
 </head>
-<body class="hold-transition skin-blue sidebar-mini" onLoad="javascript:salt_cmd_info();">
+<body class="hold-transition skin-blue sidebar-mini" onLoad="javascript:sys_roles_list_show()";>
 <div class="wrapper">
 
     <header class="main-header">
@@ -341,8 +340,7 @@
             </span>
                     </a>
                 </li>
-
-                <li class="treeview active">
+                <li>
                     <a href="#">
                         <i class="fa fa-th-large"></i> <span>Salt管理</span>
                         <span class="pull-right-container">
@@ -351,7 +349,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="{{ url_for('salt.file') }}"><i class="fa fa-wrench"></i> 配置维护</a></li>
-                        <li class="active"><a href="{{ url_for('salt.cmd') }}"><i class="fa  fa-magnet"></i> 模块执行</a></li>
+                        <li><a href="{{ url_for('salt.cmd') }}"><i class="fa  fa-magnet"></i> 模块执行</a></li>
                     </ul>
                 </li>
 
@@ -366,6 +364,7 @@
                         <li><a href="{{ url_for('assets.hosts') }}"><i class="fa fa-desktop"></i> 主机信息</a></li>
                     </ul>
                 </li>
+
                 <li>
                     <a href="#">
                         <i class="fa fa-cloud-upload"></i> <span>发布系统</span>
@@ -380,7 +379,7 @@
                 </li>
 
 
-                <li>
+                <li class="treeview active">
                     <a href="#">
                         <i class="fa fa-gear"></i> <span>系统管理</span>
                         <span class="pull-right-container">
@@ -389,6 +388,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
+                        <li class="active"><a href="{{ url_for('sys.role') }}"><i class="fa fa-group"></i> 角色管理</a></li>
                     </ul>
                 </li>
 
@@ -403,81 +403,67 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                SaltStack
-                <small>对选定主机执行命令/salt模块</small>
+                角色列表
+                <small>新增/编辑/删除角色</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="#">salt管理</a></li>
-                <li class="active">命令执行</li>
+                <li><a href="#">系统管理</a></li>
+                <li class="active">角色管理</li>
             </ol>
         </section>
+
         <!-- Main content -->
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
                         <div class="box-header">
-                            <a class="btn btn-primary btn-xs"> 1.选择主机</a>
-                             <div class="box-body">
-                                 <input type="checkbox"  id="hxy_host" onclick="salt_host_on()"/>全选/不全选
-                              </div>
-                            <div class="box-body" id="salt_cmd_host">
-                            </div>
+                            <a class="btn btn-default btn-xs" onclick="sys_roles_list_show()"><i class="fa fa-refresh"></i> 刷新</a>
+                            <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="sys_roles_add_show()"><i class="fa fa-plus-square"></i> 添加角色</a>
                         </div>
-                    </div>
-                </div>
-
-
-                <div class="col-xs-6">
-                    <div class="box">
-                        <div class="box-header">
-                            <a class="btn btn-primary btn-xs"> 2.选择模块</a>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>角色标签</th>
+                                    <th>角色名称</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="sys-roles">
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="box-header">
-                            <select class="form-control" name="salt_cmd_mode" id="salt_cmd_mode">
-                                <option value="" disabled selected style="color: #b6b6b6" >请选择</option>
-                                <option value="state.sls">state.sls</option>
-                                <option value="cmd.run">cmd.run</option>
-                            </select>
-                        </div>
+                        <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
                 </div>
-
-                <div class="col-xs-6">
-                    <div class="box">
-                        <div class="box-header">
-                            <a class="btn btn-primary btn-xs"> 3.选择模块/命令</a> 
-                            <label style="float:right">
-                                 <input type="checkbox" id="salt_cmd_mode_type" onclick="salt_cmd_mode_type()">
-                                    手动输入
-                            </label>
-                        </div>
-                        <div class="box-header" id="salt_cmd_mode_select">
-                        </div>
-                        <div class="box-header" id="salt_cmd_mode_text" style="display: none">
-                           <input class="form-control" type="text" placeholder="输入命令，请谨慎" id="salt_cmd_mode_text_info">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12">
-                    <div class="box">
-                        <div class="box-header">
-                            <a class="btn btn-app" onclick="salt_cmd_post()">
-                               <i class="fa fa-play"></i> 执行
-                            </a>
-                        </div>
-                    </div>
-                    <!-- /.box -->
-                </div>
-
                 <!-- /.col -->
             </div>
             <!-- /.row -->
         </section>
         <!-- /.content -->
+
+        <div class="box-body" style="display: none" id="sys-roles-add">
+            <div class="form-group">
+                <label for="exampleInputEmail1">角色标签</label>
+                <input type="text" class="form-control" id="sys-role-text-add" name="sys-role-text-add" placeholder="角色标签">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">角色名称</label>
+                <input type="text" class="form-control" id="sys-role-name-add" name="sys-role-name-add" placeholder="角色名称">
+            </div>
+            <div id="sys-role-buttn" >
+                <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="sys_roles_add_post()"><i class="fa fa-fw fa-save"></i>添加</a>
+            </div>
+        </div>
+
     </div>
-    <script src="{{ url_for('static', filename='js/salt.js') }}"></script>
-    {% include "common/tail.html" %}
+    <script src="{{ url_for('static', filename='js/sys.js') }}"></script>
+
+
+
+{% include "common/tail.html" %}

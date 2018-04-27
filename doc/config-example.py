@@ -30,4 +30,6 @@ SHOW_SVN_LOGS_NUM = 10
 PHP_MODE = 'apache'
 PHP_ROOT = '/www'
 
+
+
 SALT_CMD_EXCLUDE = 'rm,mkfs,dd,halt,reboot,shutdown,poweroff,init'
