@@ -4,6 +4,21 @@ from app.views.common import *
 # 定义蓝图
 sys = Blueprint('sys', __name__)
 
+# 修改密码
+@sys.route('/repasswd', methods=["GET", "POST"])
+@login_required  # 登录保护
+def repasswd():
+    if request.method == 'POST':
+
+            UserInfo = Users.query.get(request.form['id'])
+            if check_password_hash(UserInfo.passwd, request.form['original_passwd']) == False:
+                return json.dumps({"code": -1, "msg": u"原始密码错误!", "data": ""}, cls=MyEncoder)
+            else:
+                UserInfo.passwd = generate_password_hash(request.form['new_passwd'])
+                db.session.commit()
+                return json.dumps({"code": 1, "msg": u"密码修改成功!", "data": ""}, cls=MyEncoder)
+
+            #return json.dumps({"code": -1, "msg": u"密码修改失败!", "data": ""}, cls=MyEncoder)
 
 # user 用户管理模块
 @sys.route('/users', methods=["GET", "POST"])
@@ -27,7 +42,7 @@ def users_mg():
                     role = "未绑定角色"
                 var.append({
                      "active": user.active, "add_time": user.add_time,"id":user.id,"email":user.email,
-                    "login_time": user.login_time,"full_name": user.full_name, "role": role
+                    "login_time": user.login_time,"full_name": user.full_name, "role": role,"role_id":user.role_id
                     })
             return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var}, cls=MyEncoder)
 
@@ -63,25 +78,21 @@ def users_mg():
                 return json.dumps({"code": 1, "msg": u"添加成功!", "data": ""}, cls=MyEncoder)
             else:
                 return json.dumps({"code": -1, "msg": u"邮箱地址重复!", "data": ""}, cls=MyEncoder)
+
+        if action =="edit":
+            try:
+                UserInfo = Users.query.get(request.form['id'])
+                UserInfo.role_id=request.form['user_role']
+                UserInfo.full_name=request.form['user_name']
+                UserInfo.email=request.form['user_email']
+                UserInfo.active=request.form['active']
+                db.session.commit()
+                return json.dumps({"code": 1, "msg": u"编辑成功!", "data": ""}, cls=MyEncoder)
+            except:
+                return json.dumps({"code": -1, "msg": u"编辑失败!", "data": ""}, cls=MyEncoder)
+
         else:
             return json.dumps({"code": -1, "msg": u"未知方法", "data": ""})
-
-    try:
-        user_id = request.form['user_id']  # 用户ID
-        operation = request.form['operation']  # 操作
-        UserInfo = Users.query.get(user_id)
-        if operation == "disable":
-            UserInfo.active = 0
-        elif operation == "enable":
-            UserInfo.active = 1
-        elif operation == "del":
-            db.session.delete(UserInfo)
-        else:
-            UserInfo.active = 2
-        db.session.commit()
-        return rep_json(1, u"操作成功", "")
-    except:
-        return rep_json(-1, u"操作失败", "")
 
 
 @sys.route('/role', methods=["GET", "POST"])

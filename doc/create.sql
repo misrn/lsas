@@ -88,3 +88,14 @@ CREATE TABLE `operation_logs` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(255) DEFAULT NULL COMMENT '角色名称',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `role_text` varchar(255) DEFAULT NULL COMMENT '角色标签',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `users`
+ADD COLUMN `role_id`  int NULL COMMENT '角色ID' AFTER `full_name`;

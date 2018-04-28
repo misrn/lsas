@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap Login Form Template</title>
+    <title>LSAS 运维平台登录</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
@@ -43,16 +43,11 @@
     <div class="inner-bg">
         <div class="container">
             <div class="row">
-                <div class="col-sm-8 col-sm-offset-2 text">
-                    <h1><strong>Bootstrap</strong> Login Form</h1>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-sm-6 col-sm-offset-3 form-box">
                     <div class="form-top">
                         <div class="form-top-left">
-                            <h3>Login to our site</h3>
-                            <p>Enter your username and password to log on:</p>
+                            <h3>LSAS 运维平台</h3>
+                            <p>Falsk Python</p>
                         </div>
                         <div class="form-top-right">
                             <i class="fa fa-key"></i>
@@ -71,7 +66,7 @@
                                 <input type="password" name="form-password" placeholder="Password..."
                                        class="form-password form-control" id="form-password">
                             </div>
-                            <button type="submit" class="btn">Sign in!</button>
+                            <button type="submit" class="btn">登录</button>
                             {% block custom_message %}
                                 {% with messages = get_flashed_messages(with_categories=true) %}
                                     {% if messages %}
@@ -86,22 +81,6 @@
                                 {% endwith %}
                             {% endblock %}
                         </form>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6 col-sm-offset-3 social-login">
-                    <h3>...or login with:</h3>
-                    <div class="social-login-buttons">
-                        <a class="btn btn-link-1 btn-link-1-facebook" href="#">
-                            <i class="fa fa-facebook"></i> Facebook
-                        </a>
-                        <a class="btn btn-link-1 btn-link-1-twitter" href="#">
-                            <i class="fa fa-twitter"></i> Twitter
-                        </a>
-                        <a class="btn btn-link-1 btn-link-1-google-plus" href="#">
-                            <i class="fa fa-google-plus"></i> Google Plus
-                        </a>
                     </div>
                 </div>
             </div>

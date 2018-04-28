@@ -23,378 +23,74 @@
 <body class="hold-transition skin-blue sidebar-mini" onLoad="javascript:sys_user_list_show()" ;>
 <div class="wrapper">
 
-    <header class="main-header">
-        <!-- Logo -->
-        <a class="logo">
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>LSAS</b></span>
-            <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>LSAS</b>平台</span>
-        </a>
-        <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-static-top">
-            <!-- Sidebar toggle button-->
-            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
+    {% include "common/head.html" %}
 
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <!-- Messages: style can be found in dropdown.less-->
-                    <li class="dropdown messages-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-envelope-o"></i>
-                            <span class="label label-success">4</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 4 messages</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li><!-- start message -->
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <img src="{{ url_for('static', filename='dist/img/user2-160x160.jpg') }}"
-                                                     class="img-circle" alt="User Image">
-                                            </div>
-                                            <h4>
-                                                Support Team
-                                                <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                                            </h4>
-                                            <p>Why not buy a new awesome theme?</p>
-                                        </a>
-                                    </li>
-                                    <!-- end message -->
-                                    <li>
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <img src="{{ url_for('static', filename='dist/img/user3-128x128.jpg') }}"
-                                                     class="img-circle" alt="User Image">
-                                            </div>
-                                            <h4>
-                                                AdminLTE Design Team
-                                                <small><i class="fa fa-clock-o"></i> 2 hours</small>
-                                            </h4>
-                                            <p>Why not buy a new awesome theme?</p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <img src="{{ url_for('static', filename='dist/img/user4-128x128.jpg') }}"
-                                                     class="img-circle" alt="User Image">
-                                            </div>
-                                            <h4>
-                                                Developers
-                                                <small><i class="fa fa-clock-o"></i> Today</small>
-                                            </h4>
-                                            <p>Why not buy a new awesome theme?</p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <img src="{{ url_for('static', filename='dist/img/user3-128x128.jpg') }}"
-                                                     class="img-circle" alt="User Image">
-                                            </div>
-                                            <h4>
-                                                Sales Department
-                                                <small><i class="fa fa-clock-o"></i> Yesterday</small>
-                                            </h4>
-                                            <p>Why not buy a new awesome theme?</p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <img src="{{ url_for('static', filename='dist/img/user4-128x128.jpg') }}"
-                                                     class="img-circle" alt="User Image">
-                                            </div>
-                                            <h4>
-                                                Reviewers
-                                                <small><i class="fa fa-clock-o"></i> 2 days</small>
-                                            </h4>
-                                            <p>Why not buy a new awesome theme?</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">See All Messages</a></li>
-                        </ul>
-                    </li>
-                    <!-- Notifications: style can be found in dropdown.less -->
-                    <li class="dropdown notifications-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-bell-o"></i>
-                            <span class="label label-warning">10</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 10 notifications</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-warning text-yellow"></i> Very long description here that
-                                            may not fit into the
-                                            page and may cause design problems
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-red"></i> 5 new members joined
-                                        </a>
-                                    </li>
+    <!--导航开始-->
+    <ul class="sidebar-menu">
+        <li class="header">One 导航</li>
 
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-user text-red"></i> You changed your username
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">View all</a></li>
-                        </ul>
-                    </li>
-                    <!-- Tasks: style can be found in dropdown.less -->
-                    <li class="dropdown tasks-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-flag-o"></i>
-                            <span class="label label-danger">9</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 9 tasks</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li><!-- Task item -->
-                                        <a href="#">
-                                            <h3>
-                                                Design some buttons
-                                                <small class="pull-right">20%</small>
-                                            </h3>
-                                            <div class="progress xs">
-                                                <div class="progress-bar progress-bar-aqua" style="width: 20%"
-                                                     role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                                                     aria-valuemax="100">
-                                                    <span class="sr-only">20% Complete</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <!-- end task item -->
-                                    <li><!-- Task item -->
-                                        <a href="#">
-                                            <h3>
-                                                Create a nice theme
-                                                <small class="pull-right">40%</small>
-                                            </h3>
-                                            <div class="progress xs">
-                                                <div class="progress-bar progress-bar-green" style="width: 40%"
-                                                     role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                                                     aria-valuemax="100">
-                                                    <span class="sr-only">40% Complete</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <!-- end task item -->
-                                    <li><!-- Task item -->
-                                        <a href="#">
-                                            <h3>
-                                                Some task I need to do
-                                                <small class="pull-right">60%</small>
-                                            </h3>
-                                            <div class="progress xs">
-                                                <div class="progress-bar progress-bar-red" style="width: 60%"
-                                                     role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                                                     aria-valuemax="100">
-                                                    <span class="sr-only">60% Complete</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <!-- end task item -->
-                                    <li><!-- Task item -->
-                                        <a href="#">
-                                            <h3>
-                                                Make beautiful transitions
-                                                <small class="pull-right">80%</small>
-                                            </h3>
-                                            <div class="progress xs">
-                                                <div class="progress-bar progress-bar-yellow" style="width: 80%"
-                                                     role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                                                     aria-valuemax="100">
-                                                    <span class="sr-only">80% Complete</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <!-- end task item -->
-                                </ul>
-                            </li>
-                            <li class="footer">
-                                <a href="#">View all tasks</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <!-- User Account: style can be found in dropdown.less -->
-                    <li class="dropdown user user-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="{{ url_for('static', filename='dist/img/user2-160x160.jpg') }}" class="user-image"
-                                 alt="User Image">
-                            <span class="hidden-xs">{{ g.user.full_name | title }}</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <!-- User image -->
-                            <li class="user-header">
-                                <img src="{{ url_for('static', filename='dist/img/user2-160x160.jpg') }}"
-                                     class="img-circle" alt="User Image">
-
-                                <p>
-                                    {{ g.user.full_name | title }} - Web Developer
-                                    <small>Member since Nov. 2012</small>
-                                </p>
-                            </li>
-                            <!-- Menu Body -->
-                            <li class="user-body">
-                                <div class="row">
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Followers</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Sales</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Friends</a>
-                                    </div>
-                                </div>
-                                <!-- /.row -->
-                            </li>
-                            <!-- Menu Footer-->
-                            <li class="user-footer">
-                                <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                </div>
-                                <div class="pull-right">
-                                    <a href="{{ url_for("auth.logout") }}" class="btn btn-default btn-flat">注销</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <!-- Control Sidebar Toggle Button -->
-                    <li>
-                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar">
-        <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
-            <!-- Sidebar user panel -->
-            <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="{{ url_for('static', filename='dist/img/user2-160x160.jpg') }}" class="img-circle"
-                         alt="User Image">
-                </div>
-                <div class="pull-left info">
-                    <p>{{ g.user.full_name | title }}</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
-                </div>
-            </div>
-            <!-- search form -->
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
-                    <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
-                </div>
-            </form>
-            <!-- /.search form -->
-            <!-- sidebar menu: : style can be found in sidebar.less -->
-            <ul class="sidebar-menu">
-                <li class="header">One 导航</li>
-
-                <li>
-                    <a href="/">
-                        <i class="fa fa-dashboard"></i> <span>首页</span>
-                        <span class="pull-right-container">
+        <li>
+            <a href="/">
+                <i class="fa fa-dashboard"></i> <span>首页</span>
+                <span class="pull-right-container">
             </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="fa fa-th-large"></i> <span>Salt管理</span>
-                        <span class="pull-right-container">
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-th-large"></i> <span>Salt管理</span>
+                <span class="pull-right-container">
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="{{ url_for('salt.file') }}"><i class="fa fa-wrench"></i> 配置维护</a></li>
-                        <li><a href="{{ url_for('salt.cmd') }}"><i class="fa  fa-magnet"></i> 模块执行</a></li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <i class="fa fa-table"></i> <span>固定资产</span>
-                        <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="{{ url_for('assets.hosts') }}"><i class="fa fa-desktop"></i> 主机信息</a></li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <i class="fa fa-cloud-upload"></i> <span>发布系统</span>
-                        <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="{{ url_for('deploy.push') }}"><i class="fa fa-rocket"></i> 代码发布</a></li>
-                        <li><a href="{{ url_for('deploy.project') }}"><i class="fa fa-cubes"></i> 项目管理</a></li>
-                    </ul>
-                </li>
-
-
-                <li class="treeview active">
-                    <a href="#">
-                        <i class="fa fa-gear"></i> <span>系统管理</span>
-                        <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li class="active"><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
-                        <li><a href="{{ url_for('sys.role') }}"><i class="fa fa-group"></i> 角色管理</a></li>
-                    </ul>
-                </li>
-
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ url_for('salt.file') }}"><i class="fa fa-wrench"></i> 配置维护</a></li>
+                <li><a href="{{ url_for('salt.cmd') }}"><i class="fa  fa-magnet"></i> 模块执行</a></li>
             </ul>
-        </section>
-        <!-- 菜单部分 -->
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="fa fa-table"></i> <span>固定资产</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ url_for('assets.hosts') }}"><i class="fa fa-desktop"></i> 主机信息</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="fa fa-cloud-upload"></i> <span>发布系统</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ url_for('deploy.push') }}"><i class="fa fa-rocket"></i> 代码发布</a></li>
+                <li><a href="{{ url_for('deploy.project') }}"><i class="fa fa-cubes"></i> 项目管理</a></li>
+            </ul>
+        </li>
+
+
+        <li class="treeview active">
+            <a href="#">
+                <i class="fa fa-gear"></i> <span>系统管理</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="active"><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
+                <li><a href="{{ url_for('sys.role') }}"><i class="fa fa-group"></i> 角色管理</a></li>
+            </ul>
+        </li>
+
+    </ul>
+    </section>
+    <!-- 菜单部分 -->
     </aside>
 
 
@@ -455,26 +151,55 @@
         <div class="box-body" style="display: none" id="sys-user-add">
             <div class="form-group">
                 <label for="exampleInputEmail1">用户邮箱</label>
-                <input type="email" class="form-control" id="sys-user-email-add" name="sys-user-email-add" placeholder="用户邮箱">
+                <input type="email" class="form-control" id="sys-user-email-add" name="sys-user-email-add"
+                       placeholder="用户邮箱">
             </div>
             <div class="form-group">
                 <label for="exampleInputPassword1">用户名</label>
-                <input type="text" class="form-control" id="sys-user-name-add" name="sys-user-name-add" placeholder="用户名">
+                <input type="text" class="form-control" id="sys-user-name-add" name="sys-user-name-add"
+                       placeholder="用户名">
             </div>
             <div class="form-group">
                 <label for="exampleInputPassword1">角色</label>
                 <div>
                     <select class="form-control" name="sys-user-role-add" id="sys-user-role-add">
-                        <option value="" disabled selected style="color: #b6b6b6" >请选择</option>
+                        <option value="" disabled selected style="color: #b6b6b6">请选择</option>
                     </select>
                 </div>
             </div>
 
-            <div id="sys-user-buttn" >
-                <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="sys_user_add_post()"><i class="fa fa-fw fa-save"></i>添加</a>
+            <div id="sys-user-buttn">
+                <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="sys_user_add_post()"><i
+                        class="fa fa-fw fa-save"></i>添加</a>
             </div>
         </div>
-
+        <div class="box-body" style="display: none" id="sys-user-edit">
+            <div class="col-xs-6">
+                <label for="exampleInputEmail1">用户邮箱</label>
+                <input type="email" class="form-control" id="sys-user-email-edit" name="sys-user-email-edit"
+                       placeholder="用户邮箱">
+            </div>
+            <div class="col-xs-6">
+                <label for="exampleInputPassword1">用户名</label>
+                <input type="text" class="form-control" id="sys-user-name-edit" name="sys-user-name-edit"
+                       placeholder="用户名">
+            </div>
+            <div class="col-xs-6">
+                <label for="exampleInputPassword1">角色</label>
+                <div>
+                    <select class="form-control" name="sys-user-role-edit" id="sys-user-role-edit">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <label for="exampleInputPassword1">状态</label>
+                <div id="user-edit-status"></div>
+            </div>
+            <div class="col-xs-12">
+                <div id="sys-user-edit-buttn" class="box-header">
+                </div>
+            </div>
+        </div>
     </div>
     <script src="{{ url_for('static', filename='js/sys.js') }}"></script>
 
