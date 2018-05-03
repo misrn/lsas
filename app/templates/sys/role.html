@@ -83,8 +83,9 @@
                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
-                        <li class="active"><a href="{{ url_for('sys.role') }}"><i class="fa fa-group"></i> 角色管理</a></li>
+                        <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-male"></i> 用户管理</a></li>
+                        <li  class="active"><a href="{{ url_for('sys.role') }}"><i class="fa fa-bullseye"></i> 角色管理</a></li>
+                        <li><a href="{{ url_for('sys.jurisdiction') }}"><i class="fa fa-tags"></i> 权限维护</a></li>
                     </ul>
                 </li>
 
@@ -154,6 +155,17 @@
             </div>
             <div id="sys-role-buttn" >
                 <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="sys_roles_add_post()"><i class="fa fa-fw fa-save"></i>添加</a>
+            </div>
+        </div>
+
+        <div class="box-body" id="sys-role-jdc"  style="display: none" >
+            <div class="form-group">
+               <h4>拥有权限</h4>
+                <div id="sys-roles-jdc"></div>
+            </div>
+            <div class="form-group">
+                <h4>权限列表</h4>
+                <div id="sys-roles-not-jdc"></div>
             </div>
         </div>
 

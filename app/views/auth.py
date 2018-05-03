@@ -22,11 +22,22 @@ def login():
         elif user.is_active() == False:
             flash(u'该账户未激活!')
         else:
-            login_user(user)
-            UserInfo = Users.query.get(user.id)
-            UserInfo.login_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            db.session.commit()
-            return redirect(url_for('index.index'))
+            try:
+                login_user(user)
+                #获取用户角色权限
+                Jurisdiction = Roles.query.get(user.role_id).jurisdiction
+                key = ''.join(random.sample(string.ascii_letters + string.digits, 15))
+                r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
+                r.set(key, Jurisdiction)
+                session['Jurisdiction']=key
+                UserInfo = Users.query.get(user.id)
+                UserInfo.login_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                db.session.commit()
+                return redirect(url_for('index.index'))
+            except Exception,e:
+                print str(e)
+                flash(u'登录异常!')
+
     return render_template("auth/index.html")
 
 

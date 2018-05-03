@@ -320,7 +320,7 @@ function deploy_poject_add_post() {
 function deploypushlist() {
     $.ajax({
         type: 'post',
-        url: '/deploy/projectmg',
+        url: '/deploy/pushmg',
         data: {
             "action": 'list'
         },
@@ -354,7 +354,7 @@ function deploypushlist() {
 function show_project_data(project_id) {
     $.ajax({
         type: 'post',
-        url: '/deploy/projectmg',
+        url: '/deploy/pushmg',
         data: {
             "action": 'sinfo',
             "project_id": project_id
@@ -515,7 +515,7 @@ function push_code(project_type, project_id, svn_revision) {
 function push_show_log_info(log_id) {
     $.ajax({
         type: 'post',
-        url: '/deploy/projectmg',
+        url: '/deploy/pushmg',
         data: {
             "action": 'loginfo',
             "log_id": log_id

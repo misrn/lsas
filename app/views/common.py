@@ -16,6 +16,7 @@ import pysvn
 from datetime import date, datetime
 import string
 import random
+import redis
 
 #用户加载回调
 @login_manager.user_loader
@@ -27,15 +28,6 @@ def load_user(id):
 @app.before_request
 def before_request():
     g.user = current_user
-
-# 返回json
-def rep_json(code,msg,data):
-    data = {
-        "code":code,
-        "msg": msg,
-        "data":data
-    }
-    return json.dumps(data)
 
 def Json_Unicode_To_Uft8(input):
     if isinstance(input, dict):
@@ -61,19 +53,35 @@ class MyEncoder(json.JSONEncoder):
 def svn_login(*args):
     return True, app.config["SVN_USER"], app.config["SVN_PASSWD"], False
 
-
 def Svn_logs(url):  # svn信息函数
     client = pysvn.Client()
     client.callback_get_login = svn_login
     return client.log(url, limit=app.config["SHOW_SVN_LOGS_NUM"], strict_node_history=True, discover_changed_paths=True, )
 
-
 #写入日志
-def Out_logs(type,tex):
-    data = mysqld.Operation_logs(
-        user=g.user.username,
-        type=type,
-        tex=tex
-    )
-    db.session.add(data)
-    db.session.commit()
+def logs(type,tex):
+    try:
+        data = mysqld.Operation_logs(
+            user=g.user.full_name,
+            type=type,
+            tex=tex
+        )
+        db.session.add(data)
+        db.session.commit()
+    except Exception,error:
+        print str(error)
+
+def user_jurisdiction(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        key = session.get("Jurisdiction")
+        r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
+        if r.exists(key):
+            r.expire(key,60*60)
+            for i in r.get(session.get("Jurisdiction")).split(","):
+                if i == request.path[1:].replace("/","."):
+                    return func(*args, **kwargs)
+            return json.dumps({"code": -1, "msg": u"权限拒绝!", "data": ""}, cls=MyEncoder)
+        else:
+            return json.dumps({"code": -1, "msg": u"登录超时请重新登录!", "data": ""}, cls=MyEncoder)
+    return decorated_view

@@ -44,6 +44,7 @@ def appms():
         cmd= "/data/bin/out_file.sh %s %s"%(project_name,str(int(line)+1))
         status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '%s'" % (host, cmd))
         r.set(key, int(line)+input.count("\n"))
+        r.expire(key,60*60*24)
         input=input.replace(host+":", "")
         input=input.replace("<", "&lt;")
         input=input.replace(">", "&gt;")

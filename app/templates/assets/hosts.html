@@ -21,7 +21,7 @@
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/skins/_all-skins.min.css') }}">
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini" onLoad="javascript:assets_hosts_list()">
 <div class="wrapper">
 
         {% include "common/head.html" %}
@@ -84,7 +84,9 @@
                 </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-user"></i> 用户管理</a></li>
+                          <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-male"></i> 用户管理</a></li>
+                          <li><a href="{{ url_for('sys.role') }}"><i class="fa fa-bullseye"></i> 角色管理</a></li>
+                          <li><a href="{{ url_for('sys.jurisdiction') }}"><i class="fa fa-tags"></i> 权限维护</a></li>
                     </ul>
                 </li>
 
@@ -116,11 +118,11 @@
                     <div class="box">
                         <div class="box-header">
                             <a class="btn btn-default btn-xs" onclick="assets_update_hosts()"><i class="fa fa-rotate-right"></i>更新主机</a>
-                            <a class="btn btn-default btn-xs" onclick="Overloaded_page()"><i class="fa fa-refresh"></i> 刷新</a>
+                            <a class="btn btn-default btn-xs" onclick="assets_hosts_list()"><i class="fa fa-refresh"></i> 刷新</a>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
-                            <table id="example1" class="table table-bordered table-striped">
+                            <table  class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
                                     <th>主机名</th>
@@ -137,30 +139,7 @@
                                 </tr>
                                 </thead>
 
-                                <tbody>
-                                {% for host in g.HostInfo %}
-                                    <tr>
-                                        <td>{{ host.hostname }}</td>
-                                        <td>{{ host.os }} {{ host.osrelease }} </td>
-                                        <td>{{ host.kernelrelease }}</td>
-                                        <td>{{ host.eth0_ipaddr }}</td>
-                                        <td>{{ host.selinux }}</td>
-                                        <td>{{ host.num_cpus }}</td>
-                                        <td>{{ host.mem_total }}</td>
-                                        {% if host.status == 1 %}
-                                        <td><a><span class="label label-success">正常</span></a></td>
-                                            {% elif host.status == 0 %}
-                                            <td><a><span class="label label-danger">离线</span></a>
-                                                {% else %}
-                                                <td><a><span class="label label-warning">未知</span></a>
-                                        {% endif %}
-                                        </td>
-                                        <td>{{ host.add_time }}</td>
-                                        <td>{{ host.up_time }}</td>
-                                        <td onclick='hostsinfo("{{ host.hostname }}")'><a href="#"> <span class="label label-info" ><i class="fa fa-fw fa-bars"></i>详细</span></a></td>
-                                    </tr>
-                                {% endfor %}
-
+                                <tbody id="assets-hosts-list">
                                 </tbody>
                             </table>
                         </div>

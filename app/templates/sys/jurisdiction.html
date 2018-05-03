@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>LSAS | 用户管理</title>
+    <title>LSAS | 权限列表</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.png') }}">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -20,7 +20,7 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/skins/_all-skins.min.css') }}">
 </head>
-<body class="hold-transition skin-blue sidebar-mini" onLoad="javascript:sys_user_list_show()" ;>
+<body class="hold-transition skin-blue sidebar-mini" onLoad="javascript:sys_jdc_list_show()";>
 <div class="wrapper">
 
     {% include "common/head.html" %}
@@ -83,9 +83,9 @@
                 </span>
             </a>
             <ul class="treeview-menu">
-                <li class="active"><a href="{{ url_for('sys.users') }}"><i class="fa fa-male"></i> 用户管理</a></li>
+                <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-male"></i> 用户管理</a></li>
                 <li><a href="{{ url_for('sys.role') }}"><i class="fa fa-bullseye"></i> 角色管理</a></li>
-                <li><a href="{{ url_for('sys.jurisdiction') }}"><i class="fa fa-tags"></i> 权限维护</a></li>
+                <li  class="active"><a href="{{ url_for('sys.jurisdiction') }}"><i class="fa fa-tags"></i> 权限维护</a></li>
             </ul>
         </li>
 
@@ -100,13 +100,13 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                用户列表
-                <small>管理所有用户</small>
+                权限列表
+                <small>新增/编辑/权限</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
                 <li><a href="#">系统管理</a></li>
-                <li class="active">用户管理</li>
+                <li class="active">权限列表</li>
             </ol>
         </section>
 
@@ -116,26 +116,22 @@
                 <div class="col-xs-12">
                     <div class="box">
                         <div class="box-header">
-                            <a class="btn btn-default btn-xs" onclick="sys_user_list_show()"><i
-                                    class="fa fa-refresh"></i> 刷新</a>
-                            <a href="#" class="btn btn-default btn-xs" style="float:right"
-                               onclick="sys_user_add_show()"><i class="fa fa-plus-square"></i> 添加用户</a>
+                            <a class="btn btn-default btn-xs" onclick="sys_jdc_list_show()"><i class="fa fa-refresh"></i> 刷新</a>
+                            <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="sys_jdc_add_show()"><i class="fa fa-plus-square"></i> 添加权限</a>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
                             <table class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>用户名</th>
-                                    <th>邮箱</th>
-                                    <th>角色</th>
-                                    <th>状态</th>
-                                    <th>注册时间</th>
-                                    <th>最近登录</th>
+                                    <th>权限名称</th>
+                                    <th>权限标签</th>
+                                    <th>创建时间</th>
+                                    <th>描述</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
-                                <tbody id="sys-user-list">
+                                <tbody id="sys-jdc-list">
                                 </tbody>
                             </table>
                         </div>
@@ -149,60 +145,27 @@
         </section>
         <!-- /.content -->
 
-        <div class="box-body" style="display: none" id="sys-user-add">
+        <div class="box-body" style="display: none" id="sys-jdc">
             <div class="form-group">
-                <label for="exampleInputEmail1">用户邮箱</label>
-                <input type="email" class="form-control" id="sys-user-email-add" name="sys-user-email-add"
-                       placeholder="用户邮箱">
+                <label for="exampleInputPassword1">权限名称</label>
+                <input type="text" class="form-control" id="jurisdiction_name" name="jurisdiction_name" placeholder="权限标签">
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">用户名</label>
-                <input type="text" class="form-control" id="sys-user-name-add" name="sys-user-name-add"
-                       placeholder="用户名">
+                <label for="exampleInputEmail1">权限标签</label>
+                <input type="text" class="form-control" id="jurisdiction_text" name="jurisdiction_text" placeholder="权限名称">
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">角色</label>
-                <div>
-                    <select class="form-control" name="sys-user-role-add" id="sys-user-role-add">
-                        <option value="" disabled selected style="color: #b6b6b6">请选择</option>
-                    </select>
-                </div>
+                <label for="exampleInputPassword1">描述</label>
+                <input type="text" class="form-control" id="describe" name="describe" placeholder="描述">
             </div>
+            <div id="sys-jdc-buttn" >
+                <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="sys_jdc_add_post()"><i class="fa fa-fw fa-save"></i>添加</a>
+            </div>
+        </div>
 
-            <div id="sys-user-buttn">
-                <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="sys_user_add_post()"><i
-                        class="fa fa-fw fa-save"></i>添加</a>
-            </div>
-        </div>
-        <div class="box-body" style="display: none" id="sys-user-edit">
-            <div class="col-xs-6">
-                <label for="exampleInputEmail1">用户邮箱</label>
-                <input type="email" class="form-control" id="sys-user-email-edit" name="sys-user-email-edit"
-                       placeholder="用户邮箱">
-            </div>
-            <div class="col-xs-6">
-                <label for="exampleInputPassword1">用户名</label>
-                <input type="text" class="form-control" id="sys-user-name-edit" name="sys-user-name-edit"
-                       placeholder="用户名">
-            </div>
-            <div class="col-xs-6">
-                <label for="exampleInputPassword1">角色</label>
-                <div>
-                    <select class="form-control" name="sys-user-role-edit" id="sys-user-role-edit">
-                    </select>
-                </div>
-            </div>
-            <div class="col-xs-6">
-                <label for="exampleInputPassword1">状态</label>
-                <div id="user-edit-status"></div>
-            </div>
-            <div class="col-xs-12">
-                <div id="sys-user-edit-buttn" class="box-header">
-                </div>
-            </div>
-        </div>
     </div>
     <script src="{{ url_for('static', filename='js/sys.js') }}"></script>
+
 
 
 {% include "common/tail.html" %}

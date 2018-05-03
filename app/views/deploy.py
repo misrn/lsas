@@ -10,20 +10,18 @@ deploy = Blueprint('deploy', __name__)
 @deploy.route('/project', methods=["GET", "POST"])
 @login_required  # 登录保护
 def project():
-    g.HostInfo = db.session.query(Hosts).all()
     return render_template("deploy/project.html")
 
 
 @deploy.route('/push', methods=["GET", "POST"])
 @login_required  # 登录保护
 def push():
-    g.HostInfo = db.session.query(Hosts).all()
     return render_template("deploy/push.html")
 
-
-@deploy.route('/projectmg', methods=["GET", "POST"])
+@deploy.route('/pushmg', methods=["GET", "POST"])
 @login_required  # 登录保护
-def projectmg():
+@user_jurisdiction
+def pushmg():
     if request.method == 'POST':
         action = request.form['action']
         if action == "list":
@@ -38,86 +36,6 @@ def projectmg():
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var}, cls=MyEncoder)
             except:
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
-
-        elif action == "gethosts":
-            try:
-                id = request.form['project_id']
-                print id
-                ProjectInfo = Project.query.get(id)
-                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ProjectInfo.pro_hosts,"project_name":ProjectInfo.project_name},cls=MyEncoder)
-            except:
-                return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
-
-
-        elif action == "pinfo":
-
-            ProjectInfo = Project.query.get(request.form['project_id'])
-            data = {
-                "项目ID": ProjectInfo.id,
-                "项目名称": ProjectInfo.project_name,
-                "添加时间": ProjectInfo.add_time,
-                "更新时间": ProjectInfo.up_time,
-                "预生产当前版本": ProjectInfo.pre_version,
-                "生产当前版本": ProjectInfo.pro_version,
-                "项目类型": ProjectInfo.type,
-                "Svn地址": ProjectInfo.svn_addr,
-                "远端路径": ProjectInfo.app_path,
-                "本地路径": ProjectInfo.loca_path,
-                "预生产主机列表": ProjectInfo.pre_hosts,
-                "生产主机列表": ProjectInfo.pro_hosts
-            }
-
-            sdata = {
-                "id":ProjectInfo.id,
-                "project_name":ProjectInfo.project_name,
-                "pre_hosts":ProjectInfo.pre_hosts,
-                "pro_hosts":ProjectInfo.pro_hosts,
-                "type":ProjectInfo.type
-            }
-
-            g.edit_id = ProjectInfo.id
-            return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data,"sdata":sdata},cls=MyEncoder)
-
-        elif action == "editproject": #编辑项目
-            try:
-                project_name = request.form['project_name']
-                Hosts_pro = request.form['Hosts_pro']  # 生产主机列表
-                Hosts_pre = request.form['Hosts_pre']  # 预发布主机列表
-                Projecti = Project.query.filter_by(project_name=project_name).first()
-                Projecti.pre_hosts=Hosts_pre
-                Projecti.pro_hosts=Hosts_pro
-                Projecti.up_time=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                db.session.commit()
-                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ""},cls=MyEncoder)
-            except:
-                return json.dumps({"code": 1, "msg": u"编辑失败!", "data": ""},cls=MyEncoder)
-
-        elif action == "listhosts":  # 请求所有主机
-            try:
-                var = []
-                for i in db.session.query(Hosts).all():
-                    var.append({"hostname": i.hostname})
-                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var})
-            except:
-                return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
-
-        elif action == "delete":
-            project_name = request.form['project_name']
-            dstatus, inputd = commands.getstatusoutput(
-                'rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))  # 删除代码目录
-            fstatus, inputf = commands.getstatusoutput('rm -rf %s%s' % (
-                app.config['SVN_LOCA_PATH'].replace("files/", ""), project_name.replace(".", "-") + '.sls'))  # 删除执行文件
-            if dstatus == 0 and fstatus == 0:
-                try:
-                    ProjectInfo = db.session.query(Project).filter_by(project_name=project_name).first()
-                    db.session.delete(ProjectInfo)
-                    db.session.commit()
-                    return json.dumps({"code": 1, "msg": u"删除成功!", "data": ""})
-                except:
-                    return json.dumps({"code": -1, "msg": u"删除失败!", "data": ""})
-            else:
-                return json.dumps({"code": -1, "msg": u"删除失败!", "data": ""})
-
         elif action == "sinfo":
             project_id = request.form['project_id']
             ProjectInfo = Project.query.get(project_id)
@@ -166,7 +84,12 @@ def projectmg():
                                 "snum": app.config['SHOW_SVN_LOGS_NUM'],
                                 "project_name": ProjectInfo.project_name}, cls=MyEncoder)
                     )
-
+        elif action == "loginfo":
+            try:
+                LogInfo = Deploy_logs.query.get(request.form['log_id'])
+                return (json.dumps({"code": 1, "msg": u"请求数据成功!", "data": LogInfo.deploy_txt}))
+            except:
+                return (json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""}))
         elif action == "pcode":
             txt = ''
             project_id = request.form['project_id']
@@ -175,10 +98,6 @@ def projectmg():
                 ProjectInfo = Project.query.get(project_id)
             except:
                 return (json.dumps({"code": -1, "msg": u"项目发布失败!", "data": u"查询项目信息失败"}))
-            try:
-                Out_logs(action,u"项目名称:"+str(ProjectInfo.project_name)+u";发布版本:"+str(svn_revision))
-            except:
-                pass
             cmd = app.config['SVN_CMD'] + '  up  -r  ' + svn_revision + ' --username ' + app.config['SVN_USER'] + ' --password ' + app.config['SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + ProjectInfo.loca_path
             status, input = commands.getstatusoutput(cmd)  # 执行代码更新
             txt += u'<p style="font-weight:bold;color:red;"> svn 更新日志: </p>  <p> %s </p>' % (input)
@@ -206,6 +125,7 @@ def projectmg():
                 db.session.add(data)
                 ProjectInfo.pro_version = svn_revision
                 db.session.commit()
+                logs("pushmg.pcode",u"发布代码成功，项目名称：%s"%(ProjectInfo.project_name))
                 return (json.dumps({"code": 1, "msg": u"项目发布成功!", "data": txt}))
 
             else:
@@ -219,13 +139,101 @@ def projectmg():
                 db.session.commit()
                 return (json.dumps({"code": -1, "msg": u"项目发布失败!", "data": u"代码更新失败"}))
 
-        elif action == "loginfo":
-            try:
-                LogInfo = Deploy_logs.query.get(request.form['log_id'])
-                return (json.dumps({"code": 1, "msg": u"请求数据成功!", "data": LogInfo.deploy_txt}))
-            except:
-                return (json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""}))
 
+
+@deploy.route('/projectmg', methods=["GET", "POST"])
+@login_required  # 登录保护
+@user_jurisdiction
+def projectmg():
+    if request.method == 'POST':
+        action = request.form['action']
+        if action == "list":
+            try:
+                ProjectInfo = db.session.query(Project).all()  # 请求所有项目
+                var = []
+                for i in ProjectInfo:
+                    var.append(
+                        {"project_name": i.project_name, "add_time": i.add_time, "up_time": i.up_time, "id": i.id,
+                         "pro_version": str(i.pro_version), "pre_version": str(i.pre_version),
+                         "type": str(i.type)})
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var}, cls=MyEncoder)
+            except:
+                return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+        elif action == "gethosts":
+            try:
+                id = request.form['project_id']
+                print id
+                ProjectInfo = Project.query.get(id)
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ProjectInfo.pro_hosts,"project_name":ProjectInfo.project_name},cls=MyEncoder)
+            except:
+                return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+        elif action == "pinfo":
+
+            ProjectInfo = Project.query.get(request.form['project_id'])
+            data = {
+                "项目ID": ProjectInfo.id,
+                "项目名称": ProjectInfo.project_name,
+                "添加时间": ProjectInfo.add_time,
+                "更新时间": ProjectInfo.up_time,
+                "预生产当前版本": ProjectInfo.pre_version,
+                "生产当前版本": ProjectInfo.pro_version,
+                "项目类型": ProjectInfo.type,
+                "Svn地址": ProjectInfo.svn_addr,
+                "远端路径": ProjectInfo.app_path,
+                "本地路径": ProjectInfo.loca_path,
+                "预生产主机列表": ProjectInfo.pre_hosts,
+                "生产主机列表": ProjectInfo.pro_hosts
+            }
+
+            sdata = {
+                "id":ProjectInfo.id,
+                "project_name":ProjectInfo.project_name,
+                "pre_hosts":ProjectInfo.pre_hosts,
+                "pro_hosts":ProjectInfo.pro_hosts,
+                "type":ProjectInfo.type
+            }
+
+            g.edit_id = ProjectInfo.id
+            return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data,"sdata":sdata},cls=MyEncoder)
+        elif action == "editproject": #编辑项目
+            try:
+                project_name = request.form['project_name']
+                Hosts_pro = request.form['Hosts_pro']  # 生产主机列表
+                Hosts_pre = request.form['Hosts_pre']  # 预发布主机列表
+                Projecti = Project.query.filter_by(project_name=project_name).first()
+                Projecti.pre_hosts=Hosts_pre
+                Projecti.pro_hosts=Hosts_pro
+                Projecti.up_time=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                db.session.commit()
+                logs("projectmg.edit",u"编辑项目成功，项目名称：%s"%(project_name))
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ""},cls=MyEncoder)
+            except:
+                return json.dumps({"code": 1, "msg": u"编辑失败!", "data": ""},cls=MyEncoder)
+        elif action == "listhosts":  # 请求所有主机
+            try:
+                var = []
+                for i in db.session.query(Hosts).all():
+                    var.append({"hostname": i.hostname})
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var})
+            except:
+                return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+        elif action == "delete":
+            project_name = request.form['project_name']
+            dstatus, inputd = commands.getstatusoutput(
+                'rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))  # 删除代码目录
+            fstatus, inputf = commands.getstatusoutput('rm -rf %s%s' % (
+                app.config['SVN_LOCA_PATH'].replace("files/", ""), project_name.replace(".", "-") + '.sls'))  # 删除执行文件
+            if dstatus == 0 and fstatus == 0:
+                try:
+                    ProjectInfo = db.session.query(Project).filter_by(project_name=project_name).first()
+                    db.session.delete(ProjectInfo)
+                    db.session.commit()
+                    logs("projectmg.del",u"删除项目成功，项目名称：%s"%(project_name))
+                    return json.dumps({"code": 1, "msg": u"删除成功!", "data": ""})
+                except:
+                    return json.dumps({"code": -1, "msg": u"删除失败!", "data": ""})
+            else:
+                return json.dumps({"code": -1, "msg": u"删除失败!", "data": ""})
         elif action == "addproject":
             project_type = request.form['project_type']  # 项目类型
             project_name = request.form['project_name']  # 项目名称
@@ -234,10 +242,6 @@ def projectmg():
             Projecti = Project.query.filter_by(project_name=project_name).first()
             if Projecti is not None:
                 return (json.dumps({"code": -1, "msg": u"该项目已经存在!", "data": ""}))
-            try:
-                Out_logs(action,u"项目名称:"+str(project_name))
-            except:
-                pass
             # svn 代码拉取命令
             cmd = app.config['SVN_CMD'] + '  co --username ' + app.config['SVN_USER'] + ' --password ' + app.config[
                 'SVN_PASSWD'] + '  --no-auth-cache --non-interactive ' + app.config['SVN_ADDR'] + project_name + '/' + \
@@ -306,6 +310,7 @@ def projectmg():
                         )
                         db.session.add(data)
                         db.session.commit()
+                        logs("projectmg.add",u"添加项目成功，项目名称：%s"%(project_name))
                         return (json.dumps({"code": 1, "msg": u"添加项目成功!", "data": ""}))
                     except:
                         commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))  # 删除代码目录
