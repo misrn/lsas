@@ -451,7 +451,7 @@ function push_code(project_type, project_id, svn_revision) {
                 layer.close(index);
                 $.ajax({
                     type: 'post',
-                    url: '/deploy/projectmg',
+                    url: '/deploy/pushmg',
                     data: {
                         "action": 'pcode',
                         "project_id": project_id,
@@ -483,7 +483,7 @@ function push_code(project_type, project_id, svn_revision) {
             layer.msg("代码发布中，请稍后....", {time: 0});
             $.ajax({
                 type: 'post',
-                url: '/deploy/projectmg',
+                url: '/deploy/pushmg',
                 data: {
                     "action": 'pcode',
                     "project_id": project_id,

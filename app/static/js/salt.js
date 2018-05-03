@@ -207,10 +207,13 @@ function salt_on(){
 }
 
 function saltsvnci(){
+        var ci_name = document.getElementById("ci_name").value;
         var ci_passwd = document.getElementById("ci_passwd").value;
         var ci_text = document.getElementById("ci_text").value;
-        if (ci_passwd == ""){
-            layer.msg("请输入密码!")
+        if (ci_name == ""){
+            layer.msg("请输入svn账户!")  
+        } else if (ci_passwd == ""){
+            layer.msg("请输入svn密码!")
         } else if (ci_text == ""){
             layer.msg("请输入本次提交备注!")
         } else {
@@ -230,7 +233,8 @@ function saltsvnci(){
                 "action": 'commit',
                 "paths": paths.toString(),
                 "ci_text": ci_text,
-                "ci_passwd": ci_passwd
+                "ci_passwd": ci_passwd,
+                "ci_name": ci_name
             },  
             dataType: 'json',
             success: function (js) {
@@ -394,6 +398,7 @@ function salt_cmd_info() {
         },
         dataType: 'json',
         success: function (js) {
+            if (js.code == "1"){
             var host_html = '';
             for (i = 0; i < js.data.length; i++) {
                 host_html += '<label style="width: 20%"><input type="checkbox" value="' + js.data[i].hostname + '" name="sal_cmd_hosts" style="vertical-align:middle;"> ' + js.data[i].hostname + '</label>';
@@ -406,7 +411,10 @@ function salt_cmd_info() {
             cmd_html += '</select>';
             $("#salt_cmd_mode_select").html(cmd_html);
             $("#salt_cmd_host").html(host_html);
-        }
+        }else {
+              layer.msg(js.msg)
+         }
+     }
     });
 }
 

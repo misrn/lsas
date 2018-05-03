@@ -229,7 +229,7 @@ function sys_roles_jdc_show(role_id,role_name) {
                     type: 1,
                     title: "角色["+role_name+"]权限维护",
                     closeBtn: 0,
-                    area: ['60%', '250px'],
+                    area: ['60%', '390px'],
                     skin: 'white',
                     shadeClose: true,
                     content: $('#sys-role-jdc')
