@@ -188,7 +188,7 @@ function sys_role_jdc_add(role_id,jurisdiction_text,role_name) {
                             var role_jdc = '';
                             var role_not_jdc = '';
                             for (i = 0; i < obj.role_jdc.length; i++) {
-                                role_jdc += '<a class="btn btn-default btn-xs" style="margin-bottom:20px;width: 20%;margin-left:20px">' + obj.role_jdc[i].jurisdiction_name + '</a>'
+                                role_jdc += '<a class="btn btn-default btn-xs" style="margin-bottom:20px;width: 20%;margin-left:20px" onclick=sys_role_jdc_del("'+role_id+'","'+ obj.role_jdc[i].jurisdiction_text+ '","' + role_name + '")>' + obj.role_jdc[i].jurisdiction_name + '</a>'
                             }
                             for (i = 0; i < obj.role_not_jdc.length; i++) {
                                 role_not_jdc += '<a class="btn btn-default btn-xs" style="margin-bottom:20px;width: 20%;margin-left:20px" onclick=sys_role_jdc_add("' + role_id + '","' + obj.role_not_jdc[i].jurisdiction_text + '","' + role_name + '")>' + obj.role_not_jdc[i].jurisdiction_name + '</a>'
@@ -204,6 +204,49 @@ function sys_role_jdc_add(role_id,jurisdiction_text,role_name) {
         }
     });
 }
+
+function sys_role_jdc_del(role_id,jurisdiction_text,role_name) {
+    $.ajax({
+        type: 'post',
+        url: '/sys/role_mg',
+        data: {
+            "action": 'jdcdel',
+            "id": role_id,
+            "jurisdiction_text":jurisdiction_text
+        },
+        dataType: 'json',
+        success: function (obj) {
+            if (obj.code == 1) {
+                $.ajax({
+                    type: 'post',
+                    url: '/sys/role_mg',
+                    data: {
+                        "action": 'listjdc',
+                        "id": role_id
+                    },
+                    dataType: 'json',
+                    success: function (obj) {
+                        if (obj.code == 1) {
+                            var role_jdc = '';
+                            var role_not_jdc = '';
+                            for (i = 0; i < obj.role_jdc.length; i++) {
+                                role_jdc += '<a class="btn btn-default btn-xs" style="margin-bottom:20px;width: 20%;margin-left:20px" onclick=sys_role_jdc_del("'+role_id+'","'+ obj.role_jdc[i].jurisdiction_text+ '","' + role_name + '")>' + obj.role_jdc[i].jurisdiction_name + '</a>'
+                            }
+                            for (i = 0; i < obj.role_not_jdc.length; i++) {
+                                role_not_jdc += '<a class="btn btn-default btn-xs" style="margin-bottom:20px;width: 20%;margin-left:20px" onclick=sys_role_jdc_add("' + role_id + '","' + obj.role_not_jdc[i].jurisdiction_text + '","' + role_name + '")>' + obj.role_not_jdc[i].jurisdiction_name + '</a>'
+                            }
+                            $("#sys-roles-jdc").html(role_jdc);
+                            $("#sys-roles-not-jdc").html(role_not_jdc);
+                        }
+                    }
+                });
+            }else {
+                layer.msg(obj.msg)
+            }
+        }
+    });
+
+}
 function sys_roles_jdc_show(role_id,role_name) {
     $.ajax({
         type: 'post',
@@ -217,7 +260,7 @@ function sys_roles_jdc_show(role_id,role_name) {
             if (obj.code == 1){
                 var role_jdc = ''; var role_not_jdc = '';
                 for (i = 0; i < obj.role_jdc.length; i++) {
-                    role_jdc+='<a class="btn btn-default btn-xs" style="width: 20%;margin-left:20px;margin-bottom:20px">'+ obj.role_jdc[i].jurisdiction_name +'</a>'
+                    role_jdc+='<a class="btn btn-default btn-xs" style="width: 20%;margin-left:20px;margin-bottom:20px" onclick=sys_role_jdc_del("'+role_id+'","'+ obj.role_jdc[i].jurisdiction_text+ '","' + role_name + '")>'+ obj.role_jdc[i].jurisdiction_name +'</a>'
                 }
                 for (i = 0; i < obj.role_not_jdc.length; i++) {
                     role_not_jdc+='<a class="btn btn-default btn-xs" style="width: 20%;margin-left:20px;margin-bottom:20px" onclick=sys_role_jdc_add("'+role_id+'","'+ obj.role_not_jdc[i].jurisdiction_text+ '","'+role_name+'")>'+ obj.role_not_jdc[i].jurisdiction_name +'</a>'

@@ -155,6 +155,17 @@ def role_mg():
             except Exception,error:
                 print str(error)
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""}, cls=MyEncoder)
+        if action == "jdcdel":
+            try:
+                info = Roles.query.get(request.form['id'])
+                a = ','.join(filter(lambda x: x != request.form['jurisdiction_text'], info.jurisdiction.split(',')))
+                info.jurisdiction = a
+                db.session.commit()
+                logs("role_mg.jdcdel",u"角色名：%s 删除 %s 权限成功!" %(info.role_name,request.form['jurisdiction_text']))
+                return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ""}, cls=MyEncoder)
+            except Exception,error:
+                print str(error)
+                return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""}, cls=MyEncoder)
         if action == "list":
             try:
                 var = []
