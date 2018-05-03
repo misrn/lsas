@@ -24,7 +24,7 @@ def index_data():
             deployc = Deploy_logs.query.filter(Deploy_logs.deploy_time.like(time.strftime("%Y-%m-%d", time.localtime()) + "%")).count()
 
             saltmc = Operation_logs.query.filter(and_(Operation_logs.type == "salt_file"),Operation_logs.time.like(time.strftime("%Y-%m-%d", time.localtime()) + "%")).count()
-            cmdc = Operation_logs.query.filter(and_(Operation_logs.type == "cmd_execute"),Operation_logs.time.like(time.strftime("%Y-%m-%d", time.localtime()) + "%")).count()
+            cmdc = Operation_logs.query.filter(and_(Operation_logs.type == "cmdmg.cmd_execute"),Operation_logs.time.like(time.strftime("%Y-%m-%d", time.localtime()) + "%")).count()
 
             userac = Users.query.count()
             useryc = Users.query.filter_by(active=0).count()
