@@ -136,4 +136,4 @@ CREATE TABLE `users` (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', 'admin', 'pbkdf2:sha256:50000$Gk3js0Ax$2c47bb03bd9ecb826bc99f34a0f46169cc81d83a9ad4ebb1fc8a98a5aa1194a6', '1', '532898388@qq.com', '2018-03-15 16:17:35', '2018-05-03 12:46:19', 'admin', '1');
+INSERT INTO `users` VALUES ('1', 'admin', 'pbkdf2:sha256:50000$Gk3js0Ax$2c47bb03bd9ecb826bc99f34a0f46169cc81d83a9ad4ebb1fc8a98a5aa1194a6', '1', 'xxxxx@qq.com', '2018-03-15 16:17:35', '2018-05-03 12:46:19', 'admin', '1');
