@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, flash, session, g, request, redire
 from flask_login import login_required ,current_user ,logout_user,login_user
 from app.modules import  mysqld
 from app.modules import  femail
-from app.modules import salt
+from app.modules import  salt
 from app.modules.salt import *
 from app.modules.file import *
 from app.modules.mysqld import *
@@ -17,6 +17,8 @@ from datetime import date, datetime
 import string
 import random
 import redis
+import commands
+from sqlalchemy import desc , extract, and_ , or_
 
 #用户加载回调
 @login_manager.user_loader

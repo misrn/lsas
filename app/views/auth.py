@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from app.views.common import *
-import json
-from sqlalchemy import desc , extract,or_
 
 # 定义蓝图
 auth = Blueprint('auth', __name__)

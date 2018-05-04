@@ -33,6 +33,7 @@ def svnmg():
             except:
                  return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
 
+
 @salt.route('/file', methods=["GET", "POST"])
 @login_required  # 登录保护
 def file():
@@ -144,22 +145,3 @@ def cmdmg():
                 else:
                     data.append(info)
             return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data,"mode":mode})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

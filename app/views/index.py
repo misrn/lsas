@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from app.views.common import *
-from sqlalchemy import desc , extract,and_
 
 # 定义蓝图
 index_url = Blueprint('index', __name__)

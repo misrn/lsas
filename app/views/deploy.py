@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.views.common import *
-import commands
-from sqlalchemy import desc
+
 
 # 定义蓝图
 deploy = Blueprint('deploy', __name__)

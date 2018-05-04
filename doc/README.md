@@ -26,3 +26,15 @@ SHOW_SVN_LOGS_NUM =  ：显示svn历史提交记录条数 默认：5
 PHP_MODE = 'apache'  ：php项目类型目录及文件所属者  
 PHP_ROOT = '/www'    ：php项目root路径； 列项目名称为 test的php类型项目； 远端路径为 SVN_TARGET_PATH + 项目名称 + PHP_ROOT ；/data/app/test/www  
 SALT_CMD_EXCLUDE     : 过滤命令 以',' 号间隔
+
+
+EMAIL_USER   ：发件用户  
+EMAIL_PASSWD ：发件用户密码  
+EMAIL_HOST   ：发件服务器  
+EMAIL_PROT   ：端口
+
+[redis配置部分]  
+REDIS_ADDR ： redis服务器地址  
+REDIS_PROT ： redis服务器端口  
+REDIS_DB ：   redis数据库  
+REDIS_PASSWD ：密码  

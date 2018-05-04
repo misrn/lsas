@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.views.common import *
-import commands
-import random
-import string
-import redis
+
 
 # 定义蓝图
 logs = Blueprint('logs', __name__)
