@@ -536,17 +536,16 @@ function sys_jdc_list_show() {  //显示所有角色
 
 
 function sys_jdc_edit_show(id,jurisdiction_name,jurisdiction_text,describe) {
-    document.getElementById("jurisdiction_text").value = jurisdiction_text;
     document.getElementById("jurisdiction_name").value = jurisdiction_name;
     document.getElementById("describe").value = describe;
 
     $("#sys-jdc-buttn").html('<a href="#" class="btn btn-default btn-xs" style="float:right" onclick=sys_jdc_edit_post("'+ id +'")><i class="fa fa-fw fa-save"></i>确定</a>');
-
+    $('#sys-jurisdiction-text').hide();
     layer.open({
         type: 1,
         title: "编辑权限信息",
         closeBtn: 0,
-        area: ['60%', '309px'],
+        area: ['60%', '235px'],
         skin: 'white',
         shadeClose: true,
         content: $('#sys-jdc')
@@ -554,7 +553,6 @@ function sys_jdc_edit_show(id,jurisdiction_name,jurisdiction_text,describe) {
 }
 
 function sys_jdc_edit_post(id) {
-    var jurisdiction_text = document.getElementById("jurisdiction_text").value;
     var jurisdiction_name = document.getElementById("jurisdiction_name").value;
     var describe = document.getElementById("describe").value;
 
@@ -570,7 +568,6 @@ function sys_jdc_edit_post(id) {
                 "action": 'edit',
                 "id":id,
                 "describe": describe,
-                "jurisdiction_text": jurisdiction_text,
                 "jurisdiction_name":jurisdiction_name
             },
             dataType: 'json',
@@ -588,6 +585,7 @@ function sys_jdc_edit_post(id) {
 }
 
 function sys_jdc_add_show() {
+    $('#sys-jurisdiction-text').show();
     layer.open({
         type: 1,
         title: "添加权限信息",

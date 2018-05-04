@@ -270,10 +270,15 @@ def jurisdiction_mg():
 
         elif action == "del":
             try:
-                db.session.delete(Jurisdiction.query.get(request.form['id']))
-                db.session.commit()
-                logs("jurisdiction_mg.del",u"删除权限信息成功，权限ID:%s"%(request.form['id']))
-                return json.dumps({"code": 1, "msg": u"删除权限信息成功!", "data": ""})
+                JurisdictionInfo = Jurisdiction.query.get(request.form['id'])
+                Role = Roles.query.filter(Roles.jurisdiction.like("%" + JurisdictionInfo.jurisdiction_text + "%")).first()
+                if Role is not None:
+                    return json.dumps({"code": -1, "msg": u"角色[%s]拥有该权限，不允许删除!"%(Role.role_name), "data": ""})
+                else:
+                    db.session.delete(JurisdictionInfo)
+                    db.session.commit()
+                    logs("jurisdiction_mg.del",u"删除权限信息成功，权限ID:%s"%(request.form['id']))
+                    return json.dumps({"code": 1, "msg": u"删除权限信息成功!", "data": ""})
             except Exception,error:
                 print str(error)
                 return json.dumps({"code": -1, "msg": u"删除权限信息失败!", "data": ""})
@@ -281,7 +286,6 @@ def jurisdiction_mg():
         elif action == "edit":
             try:
                 jdc = Jurisdiction.query.get(request.form['id'])
-                jdc.jurisdiction_text = request.form['jurisdiction_text']
                 jdc.jurisdiction_name = request.form['jurisdiction_name']
                 jdc.describe = request.form['describe']
                 db.session.commit()
