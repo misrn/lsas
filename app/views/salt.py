@@ -22,13 +22,14 @@ def svnmg():
             paths = request.form['paths']
             ci_text = request.form['ci_text']
             ci_passwd = request.form['ci_passwd']
+            ci_name = request.form['ci_name']
             try:
                 for path in paths.split(','):
                     if path.replace("\n", "").split('       ')[0] == "?":
                         os.popen(app.config['SVN_CMD']+" add "+path.replace("\n", "").split('       ')[1])
                     elif path.replace("\n", "").split('       ')[0] == "!":
                         os.popen(app.config['SVN_CMD']+" delete "+path.replace("\n", "").split('       ')[1])
-                data = os.popen(app.config['SVN_CMD']+" ci -m '"+ci_text+"' --username "+ g.user.username +" --password "+ci_passwd+" --no-auth-cache --non-interactive  /data/salt 2>&1").readlines()
+                data = os.popen(app.config['SVN_CMD']+" ci -m '"+ci_text+"' --username "+ ci_name +" --password "+ci_passwd+" --no-auth-cache --non-interactive  /data/salt 2>&1").readlines()
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data })
             except:
                  return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
