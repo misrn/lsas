@@ -15,6 +15,7 @@ def apps():
     cmd= "/data/bin/out_file.sh %s"%(project_name)
     salt = saltAPI(host=app.config['SALT_API_ADDR'], user=app.config['SALT_API_USER'],password=app.config['SALT_API_USER'], prot=app.config['SALT_API_PROT'])
     info = salt.saltCmd({"fun": "cmd.run", "client": "local", "tgt": host , "arg":cmd})[0][host]
+    info = int(info)-50
 
     key = ''.join(random.sample(string.ascii_letters + string.digits, 8))
     r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
