@@ -19,7 +19,7 @@ def apps():
 
     key = ''.join(random.sample(string.ascii_letters + string.digits, 8))
     r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
-    if "不存在!" in info:
+    if "不存在!" in str(info):
         r.set(key, 0)
     else:
         r.set(key, info)
