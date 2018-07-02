@@ -75,7 +75,16 @@ function saltfopen(path, dpath) {
                 var Str = '<textarea spellcheck="false" id="fopentxt" style="width:100%; height:720px; font-family:SimSun">' + obj.data + '</textarea>';
                 //               var Str = '<pre contenteditable="true" id="fopentxt" >' + obj.data + '</pre>';
                 $("#editor").html(Str);
-                $('#Navigation').html(SrtNavigation)
+                $('#Navigation').html(SrtNavigation);
+
+                var E = window.wangEditor;
+                var editor = new E('#editors');
+                editor.customConfig.menus = [
+                    'undo',
+                    'redo'
+                ];
+                editor.create();
+                editor.txt.html('<p>用 JS 设置的内容</p>')
             }
         }
     });

@@ -151,6 +151,7 @@
                 <div class="box-header" id="Navigation"> <!--导航 -->
                 </div>
                 <div id="editor"></div> <!--文件内容 -->
+                <div id="editors"></div>
             </div>
 
             <div class="row" id="salt_svn_info" style="display: none">
@@ -196,4 +197,5 @@
         <!-- /.content -->
     </div>
     <script src="{{ url_for('static', filename='js/salt.js') }}"></script>
+    <script type="text/javascript" href="https://unpkg.com/wangeditor@3.1.1/release/wangEditor.min.js"></script>
 {% include "common/tail.html" %}
