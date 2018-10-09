@@ -35,6 +35,13 @@ def pushmg():
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": var}, cls=MyEncoder)
             except:
                 return json.dumps({"code": -1, "msg": u"请求数据失败!", "data": ""})
+        elif action == "selecthost":
+            project_id = request.form['project_id']
+            ProjectInfo = Project.query.get(project_id)
+            var = []
+            for host in ProjectInfo.pro_hosts.split(','):
+                var.append({"hostname":host})
+            return (json.dumps({"code": 1,"data": var}))
         elif action == "sinfo":
             project_id = request.form['project_id']
             ProjectInfo = Project.query.get(project_id)
@@ -93,6 +100,7 @@ def pushmg():
             txt = ''
             project_id = request.form['project_id']
             svn_revision = request.form['svn_revision']
+            restarthost = request.form['restarthost']
             try:
                 ProjectInfo = Project.query.get(project_id)
             except:
@@ -109,12 +117,13 @@ def pushmg():
                         txt += u'<p style="font-weight:bold;color:red;">主机 %s 代码同步失败 </p>' % (host)
                         print input
                     if status == 0 and request.form['restart'] == "y":
-                        status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '/usr/sbin/service %s restart'" % (host, ProjectInfo.project_name))  # 重启程序
-                        if status ==0:
-                            txt += u'<p style="font-weight:bold;color:green;">主机 %s 重启程序完成 </p>' % (host)
-                        else:
-                            txt += u'<p style="font-weight:bold;color:red;">主机 %s 重启程序失败 </p>' % (host)
-                            txt += u'<p style="font-weight:bold;color:red;"> 错误日志: </p>  <p> %s </p>' % (input)
+                        if host in restarthost:
+                            status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '/usr/sbin/service %s restart'" % (host, ProjectInfo.project_name))  # 重启程序
+                            if status ==0:
+                                txt += u'<p style="font-weight:bold;color:green;">主机 %s 重启程序完成 </p>' % (host)
+                            else:
+                                txt += u'<p style="font-weight:bold;color:red;">主机 %s 重启程序失败 </p>' % (host)
+                                txt += u'<p style="font-weight:bold;color:red;"> 错误日志: </p>  <p> %s </p>' % (input)
                 data = mysqld.Deploy_logs(
                     deploy_version=svn_revision,
                     deploy_user=g.user.full_name,

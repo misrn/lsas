@@ -388,7 +388,7 @@ function show_project_data(project_id) {
                     strStr += '<td> ' + obj.sdata[i].time + '</td>';
                     strStr += '<td> ' + obj.sdata[i].message + '</td>';
                     strStr += '<td> <a title=' + files + '>显示变更文件</a></td>';
-                    strStr += '<td> <a class="btn btn-default btn-xs" onclick=push_code("' + obj.project_type + '","' + obj.project_id + '","' + obj.sdata[i].revision + '")><i class="fa fa-fw fa-cloud-upload"></i>发布</a> </td>';
+                    strStr += '<td> <a class="btn btn-default btn-xs" onclick=deploy_select_hosts("' + obj.project_type + '","' + obj.project_id + '","' + obj.sdata[i].revision + '")><i class="fa fa-fw fa-cloud-upload"></i>发布</a> </td>';
                     strStr += '</tr> ';
                 }
 
@@ -441,7 +441,53 @@ function show_real_time_log(project_name,host) {
 }
 
 
-function push_code(project_type, project_id, svn_revision) {
+
+function deploy_select_hosts(type,project_id,revision) {
+       var hostsliste = [];
+        $.ajax({
+        type: 'post',
+        url: '/deploy/pushmg',
+        data: {
+            "project_id": project_id,
+            "action": 'selecthost'
+        },
+        dataType: 'json',
+        success: function (js) {
+          if (js.code == 1){
+          for (i = 0; i < js.data.length; i++){
+                hostsliste[i]=js.data[i].hostname;
+            }
+         var Str = '<div class="box-footer" > <div class="form-group"> <div class="checkbox"> ';
+          for (i =0 ; i < hostsliste.length; i++){
+              Str += '<label style="width: 50%"><input type="checkbox" value="' + hostsliste[i] + '" name="SelectHost" style="vertical-align:middle;"> ' + hostsliste[i] + '</label>';
+           }
+          Str += '</div> </div> <div> <a href="#" class="btn btn-default btn-xs" style="float:right" onclick=show_infos("' + type + '","' + project_id + '","' + revision + '")><i class="fa fa-fw fa-save"></i>确定</a> </div> </div>'
+
+
+layer.open({
+  title: "选择需要重启的主机",
+  type: 1,
+  skin: 'layui-layer-demo', //样式类名
+  closeBtn: 0, //不显示关闭按钮
+  area: ['700px', '133px'],
+  shadeClose: true, //开启遮罩关闭
+  content: Str
+});}}})}
+
+
+function show_infos(type,project_id,revision){
+    data = document.getElementsByName("SelectHost");
+    Hosts = [];
+    for (k in data) {
+        if (data[k].checked)
+            Hosts.push(data[k].value);
+    }
+
+    push_code(type,project_id,revision,Hosts.toString())
+}
+
+
+function push_code(project_type, project_id, svn_revision , hosts) {
     if (project_type == "php") {
         layer.msg('确定发布该版本?', {
             time: 0 //不自动关闭
@@ -456,7 +502,8 @@ function push_code(project_type, project_id, svn_revision) {
                         "action": 'pcode',
                         "project_id": project_id,
                         "svn_revision": svn_revision,
-                        "restart": "n"
+                        "restart": "n",
+                        "restarthost": hosts
                     },
                     dataType: 'json',
                     success: function (js) {
@@ -474,12 +521,10 @@ function push_code(project_type, project_id, svn_revision) {
                         }
                     }
                 });
-                layer.close(index);
             }
         });
 
     } else {
-        layer.prompt({title: "是否重启[y/n]"}, function (restart, index) {
             layer.msg("代码发布中，请稍后....", {time: 0});
             $.ajax({
                 type: 'post',
@@ -488,7 +533,8 @@ function push_code(project_type, project_id, svn_revision) {
                     "action": 'pcode',
                     "project_id": project_id,
                     "svn_revision": svn_revision,
-                    "restart": restart
+                    "restart": 'y',
+                    "restarthost": hosts
                 },
                 dataType: 'json',
                 success: function (js) {
@@ -506,8 +552,6 @@ function push_code(project_type, project_id, svn_revision) {
                     }
                 }
             });
-            layer.close(index);
-        });
     }
 }
 
