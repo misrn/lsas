@@ -131,6 +131,31 @@ class Hosts(db.Model):
         self.add_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 
+
+# 文件表
+class Files(db.Model):
+    __tablename__ = 'files'
+    id = db.Column(db.Integer(), primary_key=True, nullable=False)  # id
+    file_name = db.Column(db.String(255), unique=False, nullable=False)  # 文件名
+    file_path = db.Column(db.String(255), unique=False, nullable=False)  # 路径
+    file_user = db.Column(db.String(255), unique=False, nullable=False)  # 所有者
+    file_group = db.Column(db.String(255), unique=False, nullable=False)  # 所有组
+    file_node = db.Column(db.String(255), unique=False, nullable=False)  # 权限
+    file_txt = db.Column(db.Text(), unique=False, nullable=False)  # 内容
+    create_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 创建时间
+    up_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 更新时间
+
+
+    def __init__(self, file_name, file_path, file_user, file_group, file_node, file_txt):
+        self.file_name = file_name
+        self.file_path = file_path
+        self.file_user = file_user
+        self.file_group = file_group
+        self.file_node = file_node
+        self.file_txt = file_txt
+        self.create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+
 # 用户表
 class Users(db.Model):
     __tablename__ = 'users'

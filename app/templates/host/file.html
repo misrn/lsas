@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>LSAS | 文件管理</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.png') }}">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/AdminLTE.min.css') }}">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/skins/_all-skins.min.css') }}">
+</head>
+<body class="hold-transition skin-blue sidebar-mini" onLoad="javascript:_file_list()">
+<div class="wrapper">
+
+    {% include "common/head.html" %}
+
+    <!--导航开始-->
+    <ul class="sidebar-menu">
+        <li class="header">One 导航</li>
+
+        <li>
+            <a href="/">
+                <i class="fa fa-dashboard"></i> <span>首页</span>
+                <span class="pull-right-container">
+            </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="fa fa-th-large"></i> <span>Salt管理</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ url_for('salt.file') }}"><i class="fa fa-wrench"></i> 配置维护</a></li>
+                <li><a href="{{ url_for('salt.cmd') }}"><i class="fa  fa-magnet"></i> 模块执行</a></li>
+            </ul>
+        </li>
+        <li class="treeview active">
+            <a href="#">
+                <i class="fa fa-th-large"></i> <span>服务器管理</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li  class="active"><a href="{{ url_for('host.file') }}"><i class="fa fa-wrench"></i> 文件管理</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-table"></i> <span>固定资产</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ url_for('assets.hosts') }}"><i class="fa fa-desktop"></i> 主机信息</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="fa fa-cloud-upload"></i> <span>发布系统</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ url_for('deploy.push') }}"><i class="fa fa-rocket"></i> 代码发布</a></li>
+                <li><a href="{{ url_for('deploy.project') }}"><i class="fa fa-cubes"></i> 项目管理</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="fa fa-gear"></i> <span>系统管理</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ url_for('sys.users') }}"><i class="fa fa-male"></i> 用户管理</a></li>
+                <li><a href="{{ url_for('sys.role') }}"><i class="fa fa-bullseye"></i> 角色管理</a></li>
+                <li><a href="{{ url_for('sys.jurisdiction') }}"><i class="fa fa-tags"></i> 权限维护</a></li>
+            </ul>
+        </li>
+
+
+    </ul>
+    </section>
+    <!-- 菜单部分 -->
+    </aside>
+
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                文件列表
+                <small>将指定文件同步到指定服务器目录，并设置对应权限。</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a href="#">固定资产</a></li>
+                <li class="active">主机管理</li>
+            </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <a class="btn btn-default btn-xs" onclick="deployplist()"><i class="fa fa-refresh"></i> 刷新</a>
+                            <a href="#" class="btn btn-default btn-xs" style="float:right" onclick="deploy_poject_add_layer()"><i class="fa fa-plus-square"></i> 添加文件</a>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table  class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>文件名</th>
+                                    <th>文件路径</th>
+                                    <th>用户</th>
+                                    <th>组</th>
+                                    <th>权限</th>
+                                    <th>添加时间</th>
+                                    <th>更新时间</th>
+                                    <th>内容</th>
+                                    <th>推送</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="host-file-list">
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <script src="{{ url_for('static', filename='js/host.js') }}"></script>
+{% include "common/tail.html" %}
