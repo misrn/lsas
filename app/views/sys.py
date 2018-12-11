@@ -18,11 +18,11 @@ def repasswd():
             else:
                 UserInfo.passwd = generate_password_hash(request.form['new_passwd'])
                 db.session.commit()
-                logs("repasswd",u"修改密码成功!")
+                InputLog("repasswd",u"修改密码成功!")
                 return json.dumps({"code": 1, "msg": u"密码修改成功!", "data": ""}, cls=MyEncoder)
         except Exception,error:
             print str(error)
-            logs("repasswd",u"修改密码失败!")
+            InputLog("repasswd",u"修改密码失败!")
             return json.dumps({"code": -1, "msg": u"密码修改失败!", "data": ""}, cls=MyEncoder)
 
 # 用户管理html模块
@@ -61,7 +61,7 @@ def users_mg():
                 User=Users.query.get(id)
                 db.session.delete(User)
                 db.session.commit()
-                logs("users_mg.del",u"删除用户成功，用户ID:%s"%(id))
+                InputLog("users_mg.del",u"删除用户成功，用户ID:%s"%(id))
                 return json.dumps({"code": 1, "msg": u"删除用户成功!", "data": ""}, cls=MyEncoder)
             except Exception,error:
                 print str(error)
@@ -89,10 +89,10 @@ def users_mg():
                     <p>请牢记你的密码：<strong>%s</strong></p>
                     """ %(user_email,passwd)
                     send_mail(user_email,u"运维平台账号密码通知",content)
-                    logs("users_mg.add",u"新增用户成功，用户名："+user_name)
+                    InputLog("users_mg.add",u"新增用户成功，用户名："+user_name)
                     return json.dumps({"code": 1, "msg": u"新增用户成功!", "data": ""}, cls=MyEncoder)
                 else:
-                    logs("users_mg.add",u"新增用户失败,邮箱地址重复!")
+                    InputLog("users_mg.add",u"新增用户失败,邮箱地址重复!")
                     return json.dumps({"code": -1, "msg": u"新增用户失败,邮箱地址重复!", "data": ""}, cls=MyEncoder)
             except Exception,error:
                 print str(error)
@@ -106,7 +106,7 @@ def users_mg():
                 UserInfo.email=request.form['user_email']
                 UserInfo.active=request.form['active']
                 db.session.commit()
-                logs("users_mg.edit",u"编辑用户成功,用户ID:%s"%(request.form['id']))
+                InputLog("users_mg.edit",u"编辑用户成功,用户ID:%s"%(request.form['id']))
                 return json.dumps({"code": 1, "msg": u"编辑成功!", "data": ""}, cls=MyEncoder)
             except:
                 return json.dumps({"code": -1, "msg": u"编辑失败!", "data": ""}, cls=MyEncoder)
@@ -150,7 +150,7 @@ def role_mg():
                 else:
                     info.jurisdiction = info.jurisdiction+','+jurisdiction_text
                 db.session.commit()
-                logs("role_mg.jdcadd",u"角色名：%s 新增 %s 权限成功!" %(info.role_name,jurisdiction_text))
+                InputLog("role_mg.jdcadd",u"角色名：%s 新增 %s 权限成功!" %(info.role_name,jurisdiction_text))
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ""}, cls=MyEncoder)
             except Exception,error:
                 print str(error)
@@ -161,7 +161,7 @@ def role_mg():
                 a = ','.join(filter(lambda x: x != request.form['jurisdiction_text'], info.jurisdiction.split(',')))
                 info.jurisdiction = a
                 db.session.commit()
-                logs("role_mg.jdcdel",u"角色名：%s 删除 %s 权限成功!" %(info.role_name,request.form['jurisdiction_text']))
+                InputLog("role_mg.jdcdel",u"角色名：%s 删除 %s 权限成功!" %(info.role_name,request.form['jurisdiction_text']))
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ""}, cls=MyEncoder)
             except Exception,error:
                 print str(error)
@@ -190,17 +190,17 @@ def role_mg():
                     )
                     db.session.add(data)
                     db.session.commit()
-                    logs("role_mg.add",u"添加角色成功，角色名称：%s"%(role_name))
+                    InputLog("role_mg.add",u"添加角色成功，角色名称：%s"%(role_name))
                     return json.dumps({"code": 1, "msg": u"添加角色成功", "data": ""})
             except Exception,error:
                 print str(error)
-                logs("role_mg.add",u"添加角色失败!")
+                InputLog("role_mg.add",u"添加角色失败!")
                 return json.dumps({"code": -1, "msg": u"添加角色失败", "data": ""})
         elif action == "del":
             try:
                 db.session.delete(Roles.query.get(request.form['id']))
                 db.session.commit()
-                logs("role_mg.del",u"删除角色成功，角色ID：%s"%(request.form['id']))
+                InputLog("role_mg.del",u"删除角色成功，角色ID：%s"%(request.form['id']))
                 return json.dumps({"code": 1, "msg": u"删除角色成功", "data": ""})
             except Exception,error:
                 print str(error)
@@ -213,7 +213,7 @@ def role_mg():
                 Role.role_text = role_text
                 Role.role_name = role_name
                 db.session.commit()
-                logs("role_mg.edit",u"编辑角色成功,角色ID:%s" %(request.form['id']))
+                InputLog("role_mg.edit",u"编辑角色成功,角色ID:%s" %(request.form['id']))
                 return json.dumps({"code": 1, "msg": u"编辑角色成功", "data": ""})
             except Exception,error:
                 print str(error)
@@ -262,7 +262,7 @@ def jurisdiction_mg():
                     )
                     db.session.add(data)
                     db.session.commit()
-                    logs("jurisdiction_mg.add",u"添加权限信息成功，权限名称:%s"%(jurisdiction_name))
+                    InputLog("jurisdiction_mg.add",u"添加权限信息成功，权限名称:%s"%(jurisdiction_name))
                     return json.dumps({"code": 1, "msg": u"添加权限信息成功", "data": ""})
             except Exception,error:
                 print str(error)
@@ -277,7 +277,7 @@ def jurisdiction_mg():
                 else:
                     db.session.delete(JurisdictionInfo)
                     db.session.commit()
-                    logs("jurisdiction_mg.del",u"删除权限信息成功，权限ID:%s"%(request.form['id']))
+                    InputLog("jurisdiction_mg.del",u"删除权限信息成功，权限ID:%s"%(request.form['id']))
                     return json.dumps({"code": 1, "msg": u"删除权限信息成功!", "data": ""})
             except Exception,error:
                 print str(error)
@@ -289,7 +289,7 @@ def jurisdiction_mg():
                 jdc.jurisdiction_name = request.form['jurisdiction_name']
                 jdc.describe = request.form['describe']
                 db.session.commit()
-                logs("jurisdiction_mg.edit",u"编辑权限信息成功，权限ID:%s"%(request.form['id']))
+                InputLog("jurisdiction_mg.edit",u"编辑权限信息成功，权限ID:%s"%(request.form['id']))
                 return json.dumps({"code": 1, "msg": u"编辑权限信息成功!", "data": ""})
             except Exception,error:
                 print str(error)

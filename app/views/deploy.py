@@ -133,7 +133,7 @@ def pushmg():
                 db.session.add(data)
                 ProjectInfo.pro_version = svn_revision
                 db.session.commit()
-                logs("pushmg.pcode",u"发布代码成功，项目名称：%s"%(ProjectInfo.project_name))
+                InputLog("pushmg.pcode",u"发布代码成功，项目名称：%s"%(ProjectInfo.project_name))
                 return (json.dumps({"code": 1, "msg": u"项目发布成功!", "data": txt}))
 
             else:
@@ -213,7 +213,7 @@ def projectmg():
                 Projecti.pro_hosts=Hosts_pro
                 Projecti.up_time=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                 db.session.commit()
-                logs("projectmg.edit",u"编辑项目成功，项目名称：%s"%(project_name))
+                InputLog("projectmg.edit",u"编辑项目成功，项目名称：%s"%(project_name))
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ""},cls=MyEncoder)
             except:
                 return json.dumps({"code": 1, "msg": u"编辑失败!", "data": ""},cls=MyEncoder)
@@ -236,7 +236,7 @@ def projectmg():
                     ProjectInfo = db.session.query(Project).filter_by(project_name=project_name).first()
                     db.session.delete(ProjectInfo)
                     db.session.commit()
-                    logs("projectmg.del",u"删除项目成功，项目名称：%s"%(project_name))
+                    InputLog("projectmg.del",u"删除项目成功，项目名称：%s"%(project_name))
                     return json.dumps({"code": 1, "msg": u"删除成功!", "data": ""})
                 except:
                     return json.dumps({"code": -1, "msg": u"删除失败!", "data": ""})
@@ -318,7 +318,7 @@ def projectmg():
                         )
                         db.session.add(data)
                         db.session.commit()
-                        logs("projectmg.add",u"添加项目成功，项目名称：%s"%(project_name))
+                        InputLog("projectmg.add",u"添加项目成功，项目名称：%s"%(project_name))
                         return (json.dumps({"code": 1, "msg": u"添加项目成功!", "data": ""}))
                     except:
                         commands.getstatusoutput('rm -rf %s%s' % (app.config['SVN_LOCA_PATH'], project_name))  # 删除代码目录

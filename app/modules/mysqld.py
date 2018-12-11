@@ -137,22 +137,16 @@ class Files(db.Model):
     __tablename__ = 'files'
     id = db.Column(db.Integer(), primary_key=True, nullable=False)  # id
     file_name = db.Column(db.String(255), unique=False, nullable=False)  # 文件名
-    file_path = db.Column(db.String(255), unique=False, nullable=False)  # 路径
-    file_user = db.Column(db.String(255), unique=False, nullable=False)  # 所有者
-    file_group = db.Column(db.String(255), unique=False, nullable=False)  # 所有组
-    file_node = db.Column(db.String(255), unique=False, nullable=False)  # 权限
-    file_txt = db.Column(db.Text(), unique=False, nullable=False)  # 内容
+    salt_mode = db.Column(db.String(255), unique=False, nullable=False)  # salt sls id
     create_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 创建时间
     up_time = db.Column(db.DateTime(), unique=False, nullable=True)  # 更新时间
+    lnhosts = db.Column(db.String(255), unique=False, nullable=False)  # 关联主机
 
 
-    def __init__(self, file_name, file_path, file_user, file_group, file_node, file_txt):
+    def __init__(self, file_name, salt_mode, lnhosts):
         self.file_name = file_name
-        self.file_path = file_path
-        self.file_user = file_user
-        self.file_group = file_group
-        self.file_node = file_node
-        self.file_txt = file_txt
+        self.salt_mode = salt_mode
+        self.lnhosts = lnhosts
         self.create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 

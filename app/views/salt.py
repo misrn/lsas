@@ -65,28 +65,28 @@ def filemg():
         
         elif action == "rename":
             newname = request.form["newname"].replace(" ", "")  # 新名称
-            logs("salt_file",u"重命名:"+str(path+';为：'+newname))
+            InputLog("salt_file",u"重命名:"+str(path+';为：'+newname))
             return F.rename(path, newname)
 
         elif action == "delete":
-            logs("salt_file",u"删除文件:"+str(path))
+            InputLog("salt_file",u"删除文件:"+str(path))
             return F.delete(path)
 
         elif action == "dadd":
             dname = request.form["dname"].replace(" ", "") # 目录名称
-            logs("salt_file",u"添加目录:"+str(path+'/'+dname))
+            InputLog("salt_file",u"添加目录:"+str(path+'/'+dname))
             return F.dadd(path, dname)
 
         elif action == "fadd":
             dname = request.form["dname"].replace(" ", "") # 文件名称
-            logs("salt_file",u"添加文件:"+str(path+'/'+dname))
+            InputLog("salt_file",u"添加文件:"+str(path+'/'+dname))
             return F.fadd(path, dname)
 
         elif action == "fopen":
             return F.fopen(path)
 
         elif action == "fsave":
-            logs("salt_file",u"修改文件:"+str(path))
+            InputLog("salt_file",u"修改文件:"+str(path))
             return F.fsave(path, request.form["content"])
 
 
@@ -128,7 +128,7 @@ def cmdmg():
             salt_cmd_mode_info = request.form['salt_cmd_mode_info']
             salt_cmd_mode = request.form['salt_cmd_mode']
             salt_cmd_hosts = request.form['hosts']
-            logs("cmdmg.cmd_execute",u"主机："+salt_cmd_hosts+u"执行命令:"+str(salt_cmd_mode)+'--'+salt_cmd_mode_info)
+            InputLog("cmdmg.cmd_execute",u"主机："+salt_cmd_hosts+u"执行命令:"+str(salt_cmd_mode)+'--'+salt_cmd_mode_info)
             salt = saltAPI(host=app.config['SALT_API_ADDR'], user=app.config['SALT_API_USER'],password=app.config['SALT_API_USER'], prot=app.config['SALT_API_PROT'])
             for cmd in app.config['SALT_CMD_EXCLUDE'].split(','):
                 if cmd in salt_cmd_mode_info:

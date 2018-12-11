@@ -7,6 +7,7 @@ from app.modules import  salt
 from app.modules.salt import *
 from app.modules.file import *
 from app.modules.mysqld import *
+from app.modules.Redis import *
 from app.modules.femail import *
 from app import login_manager, app
 from functools import wraps
@@ -19,6 +20,8 @@ import random
 import redis
 import commands
 from sqlalchemy import desc , extract, and_ , or_
+
+Redisd = Redisd()
 
 #用户加载回调
 @login_manager.user_loader
@@ -61,7 +64,7 @@ def Svn_logs(url):  # svn信息函数
     return client.log(url, limit=app.config["SHOW_SVN_LOGS_NUM"], strict_node_history=True, discover_changed_paths=True, )
 
 #写入日志
-def logs(type,tex):
+def InputLog(type,tex):
     try:
         data = mysqld.Operation_logs(
             user=g.user.full_name,
@@ -71,16 +74,15 @@ def logs(type,tex):
         db.session.add(data)
         db.session.commit()
     except Exception,error:
-        print str(error)
+        print(str(error))
 
 def user_jurisdiction(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
         key = session.get("Jurisdiction")
-        r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
-        if r.exists(key):
-            r.expire(key,60*60)
-            for i in r.get(session.get("Jurisdiction")).split(","):
+        if Redisd.Exists(key):
+            Redisd.Expire(key,60*60)
+            for i in Redisd.Get(session.get("Jurisdiction")).split(","):
                 if i == request.path[1:].replace("/","."):
                     return func(*args, **kwargs)
             return json.dumps({"code": -1, "msg": u"权限拒绝!", "data": ""}, cls=MyEncoder)

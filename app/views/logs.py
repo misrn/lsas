@@ -18,12 +18,11 @@ def apps():
     info = int(info)-50
 
     key = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-    r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
     if "不存在!" in str(info):
-        r.set(key, 0)
+        Redisd.Set(key, 0)
     else:
-        r.set(key, info)
-    r.expire(key,60*60*24)
+        Redisd.Set(key, info)
+    Redisd.Expire(key,60*60*24)
     g.key = key
     g.project_name = project_name
     g.host = host
@@ -37,12 +36,11 @@ def appms():
         key = request.form['key']
         project_name = request.form['project_name']
         host = request.form['host']
-        r = redis.Redis(host=app.config['REDIS_ADDR'], port=app.config['REDIS_PROT'],db=app.config['REDIS_DB'],password=app.config['REDIS_PASSWD'])
-        line = r.get(key)
+        line = Redisd.Get(key)
         cmd= "/data/bin/out_file.sh %s %s"%(project_name,str(int(line)+1))
         status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '%s'" % (host, cmd))
-        r.set(key, int(line)+input.count("\n"))
-        r.expire(key,60*60*24)
+        Redisd.Set(key, int(line)+input.count("\n"))
+        Redisd.Expire(key,60*60*24)
         input=input.replace(host+":", "")
         input=input.replace("<", "&lt;")
         input=input.replace(">", "&gt;")
