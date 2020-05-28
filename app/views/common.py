@@ -5,7 +5,6 @@ from app.modules import  mysqld
 from app.modules import  femail
 from app.modules import  salt
 from app.modules.salt import *
-from app.modules.file import *
 from app.modules.mysqld import *
 from app.modules.Redis import *
 from app.modules.femail import *
@@ -13,12 +12,10 @@ from app import login_manager, app
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
-import pysvn
 from datetime import date, datetime
 import string
 import random
 import redis
-import commands
 from sqlalchemy import desc , extract, and_ , or_
 
 Redisd = Redisd()
@@ -73,7 +70,7 @@ def InputLog(type,tex):
         )
         db.session.add(data)
         db.session.commit()
-    except Exception,error:
+    except Exception as error:
         print(str(error))
 
 def user_jurisdiction(func):
@@ -82,7 +79,10 @@ def user_jurisdiction(func):
         key = session.get("Jurisdiction")
         if Redisd.Exists(key):
             Redisd.Expire(key,60*60)
-            for i in Redisd.Get(session.get("Jurisdiction")).split(","):
+
+            print(request.path[1:])
+
+            for i in str(Redisd.Get(session.get("Jurisdiction"))).split(","):
                 if i == request.path[1:].replace("/","."):
                     return func(*args, **kwargs)
             return json.dumps({"code": -1, "msg": u"权限拒绝!", "data": ""}, cls=MyEncoder)

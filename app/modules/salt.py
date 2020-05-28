@@ -1,4 +1,4 @@
-import urllib2, urllib, json, re
+import urllib, json, re
 
 
 class saltAPI(object):
@@ -9,6 +9,7 @@ class saltAPI(object):
         self.__token_id = self.salt_login()
 
     def salt_login(self):
+        urllib2 = 0
         params = {'eauth': 'pam', 'username': self.__user, 'password': self.__password}
         encode = urllib.urlencode(params)
         obj = urllib.unquote(encode)

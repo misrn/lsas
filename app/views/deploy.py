@@ -115,7 +115,7 @@ def pushmg():
                         txt += u'<p style="font-weight:bold;color:green;">主机 %s 代码同步完成 </p>' % (host)
                     else:
                         txt += u'<p style="font-weight:bold;color:red;">主机 %s 代码同步失败 </p>' % (host)
-                        print input
+
                     if status == 0 and request.form['restart'] == "y":
                         if host in restarthost:
                             status, input = commands.getstatusoutput("/usr/bin/salt '%s' cmd.run '/usr/sbin/service %s restart'" % (host, ProjectInfo.project_name))  # 重启程序
@@ -170,7 +170,7 @@ def projectmg():
         elif action == "gethosts":
             try:
                 id = request.form['project_id']
-                print id
+
                 ProjectInfo = Project.query.get(id)
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ProjectInfo.pro_hosts,"project_name":ProjectInfo.project_name},cls=MyEncoder)
             except:

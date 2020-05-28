@@ -15,6 +15,6 @@ def send_mail(to_list,subject,content):
         s.sendmail(app.config["EMAIL_USER"],to_list,msg.as_string())
         s.close()
         return True
-    except Exception,e:
-        print str(e)
+    except Exception as e:
+        print(str(e))
         return False

@@ -32,6 +32,6 @@ def index_data():
                 return Value
             else:
                 return RedisData
-        except Exception, Err:
-            print str(Err)
+        except Exception as Err:
+            print(str(Err))
             return json.dumps({"code": -1, "msg": u"系统错误"})

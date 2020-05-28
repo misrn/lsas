@@ -11,26 +11,24 @@ def login():
     if g.user.is_authenticated:  # 判断用户是否已经登录
         return redirect(url_for('index.index'))
     if request.method == 'POST':
-        UserName = request.form['form-username']
-        g.auth_username = UserName
-        QueryData = Users.query.filter(or_(Users.full_name == UserName, Users.email == UserName)).first()  # 查询用户信息
-        if QueryData is None or check_password_hash(QueryData.passwd, request.form['form-password']) == False:
+        user_name = request.form['form-username']
+        g.auth_username = user_name
+        QueryData = Users.query.filter(or_(Users.full_name == user_name, Users.email == user_name)).first()  # 查询用户信息
+        if QueryData is None or check_password_hash(QueryData.passwd, request.form['form-password']) is False:
             flash(u'用户名/密码错误!')
-        elif QueryData.is_active() == False:
+        elif QueryData.is_active() is False:
             flash(u'该账户未激活!')
         else:
-            try:
-                login_user(QueryData)
-                Jurisdiction = Roles.query.get(QueryData.role_id).jurisdiction  # 获取用户角色权限
-                RedisKey = ''.join(random.sample(string.ascii_letters + string.digits, 15))
-                session['Jurisdiction'] = RedisKey
-                Redisd.Set(RedisKey, Jurisdiction ,86400)
-                QueryData.login_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                db.session.commit()
-                return redirect(url_for('index.index'))
-            except Exception, Err:
-                print str(Err)
-                flash(u'登录异常!')
+
+            login_user(QueryData)
+            Jurisdiction = Roles.query.get(QueryData.role_id).jurisdiction  # 获取用户角色权限
+            RedisKey = ''.join(random.sample(string.ascii_letters + string.digits, 15))
+            session['Jurisdiction'] = RedisKey
+            Redisd.Set(RedisKey, Jurisdiction, 86400)
+            QueryData.login_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            db.session.commit()
+            return redirect(url_for('index.index'))
+
     return render_template("auth/index.html")
 
 

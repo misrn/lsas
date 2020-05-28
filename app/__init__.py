@@ -22,7 +22,7 @@ login_manager.login_view = 'auth.login'
 cache = SimpleCache()
 
 # 注册蓝图
-from views import auth, index, sys, assets, salt, deploy, logs ,host
+from app.views import auth, index, sys, assets, salt, deploy, logs, host
 
 app.register_blueprint(sys.sys, url_prefix='/sys')
 app.register_blueprint(logs.logs, url_prefix='/logs')

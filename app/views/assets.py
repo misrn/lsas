@@ -29,8 +29,8 @@ def hostsmg():
                                      "add_time": host.add_time, "up_time": host.up_time, "eth0_ipaddr": host.eth0_ipaddr
                                      })
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": hostlist}, cls=MyEncoder)
-            except Exception,error:
-                print str(error)
+            except Exception as error:
+                print(str(error))
                 return json.dumps({"code": 1, "msg": u"请求数据失败!", "data": ""}, cls=MyEncoder)
 
         if action == "hostsup":
@@ -51,8 +51,8 @@ def hostsmg():
                  for host in HostAllInfo:
                      try:
                          ipaddr = HostAllInfo[host]['ip4_interfaces']['eth0'][0]
-                     except Exception,error:
-                         print str(error)
+                     except Exception as error:
+                         print(str(error))
                          ipaddr = ""
                      # 查询当前主机信息
                      HostInfo = db.session.query(Hosts).filter_by(hostname=host).first()
@@ -84,8 +84,8 @@ def hostsmg():
                      db.session.commit()
                  logs("hostsmg.hostsup",u"更新主机列表成功")
                  return json.dumps({"code": 1, "msg": u"更新主机列表成功!", "data": ""}, cls=MyEncoder)
-            except Exception,error:
-                print str(error)
+            except Exception as error:
+                print(str(error))
                 return json.dumps({"code": -1, "msg": u"更新主机列表失败!", "data": ""}, cls=MyEncoder)
         if action == "hostinfo":
             try:
@@ -94,6 +94,6 @@ def hostsmg():
                            password=app.config['SALT_API_USER'], prot=app.config['SALT_API_PROT'])
                 HostAllInfo = salt.saltCmd({"fun": "grains.items", "client": "local", "tgt": HostName})[0]
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": Json_Unicode_To_Uft8(HostAllInfo)}, cls=MyEncoder)
-            except Exception,error:
-                print str(error)
+            except Exception as error:
+                print(str(error))
                 return json.dumps({"code": -1, "msg": u"请求数据成功!", "data": ""}, cls=MyEncoder)

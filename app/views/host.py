@@ -24,8 +24,8 @@ def filemg():
                     data.append({"id": file.id, "file_name": file.file_name, "salt_mode": file.salt_mode,
                                  "create_time": file.create_time, "up_time": file.up_time})
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": data}, cls=MyEncoder)
-            except Exception, error:
-                print str(error)
+            except Exception as error:
+                print(str(error))
                 return json.dumps({"code": 1, "msg": u"请求数据失败!", "data": ""}, cls=MyEncoder)
         elif action == "showtxt":
             Data = Files.query.get(request.form['id'])
@@ -52,8 +52,8 @@ def filemg():
                 data.lnhosts = request.form['Hosts']
                 db.session.commit()
                 return json.dumps({"code": 1, "msg": u"更新数据成功!", "data": ""})
-            except Exception, e:
-                print str(e)
+            except Exception as error:
+                print(str(error))
                 return json.dumps({"code": -1, "msg": u"更新数据失败!", "data": ""})
         elif action == "push":
             try:
@@ -66,8 +66,8 @@ def filemg():
                     ReturnDate.append(info)
                 InputLog("file.push.%s"%(data.salt_mode),u"新增--推送主机: %s"%(data.lnhosts))
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ReturnDate})
-            except Exception, e:
-                print str(e)
+            except Exception as error:
+                print(str(error))
                 return json.dumps({"code": 1, "msg": u"系统错误!", "data": " "})
 
         elif action == "remove":
@@ -81,8 +81,8 @@ def filemg():
                     ReturnDate.append(info)
                 InputLog("file.push.%s"%(data.salt_mode),u"卸载--推送主机: %s"%(data.lnhosts))
                 return json.dumps({"code": 1, "msg": u"请求数据成功!", "data": ReturnDate})
-            except Exception, e:
-                print str(e)
+            except Exception as error:
+                print(str(error))
                 return json.dumps({"code": 1, "msg": u"系统错误!", "data": " "})
 
         elif action == "History_":
